@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/viewCourseLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:id="@+id/lblViewCourseHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Course Details"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/txtViewCourseTitle"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:inputType="textCapWords"
+            android:nextFocusDown="@id/txtViewCourseStartMonth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseHeader" />
+
+        <TextView
+            android:id="@+id/lblViewCourseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Course Title"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseTitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseTitle" />
+
+        <TextView
+            android:id="@+id/lblViewCourseAlignment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/txtViewCourseStartMonth"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:inputType="number"
+            android:nextFocusDown="@id/txtViewCourseStartYear"
+            app:layout_constraintEnd_toStartOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseTitle" />
+
+        <EditText
+            android:id="@+id/txtViewCourseStartYear"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:inputType="number"
+            android:nextFocusDown="@id/txtViewCourseEndMonth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txtViewCourseStartMonth"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseTitle" />
+
+        <EditText
+            android:id="@+id/txtViewCourseEndMonth"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:inputType="number"
+            android:nextFocusDown="@id/txtViewCourseEndYear"
+            app:layout_constraintEnd_toEndOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseStartMonth" />
+
+        <EditText
+            android:id="@+id/txtViewCourseEndYear"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:inputType="number"
+            android:nextFocusDown="@id/txtViewCourseInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txtViewCourseEndMonth"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseStartYear" />
+
+        <TextView
+            android:id="@+id/lblViewCourseStartMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Starting Month"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseStartMonth"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseStartMonth" />
+
+        <TextView
+            android:id="@+id/lblViewCourseStartYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Starting Year"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseStartYear"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseStartYear" />
+
+        <TextView
+            android:id="@+id/lblViewCourseEndMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Ending Month"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseEndMonth"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseEndMonth" />
+
+        <TextView
+            android:id="@+id/lblViewCourseEndYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Ending Year"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseEndYear"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseEndYear" />
+
+        <EditText
+            android:id="@+id/txtViewCourseInfo"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseEndMonth" />
+
+        <TextView
+            android:id="@+id/lblViewCourseInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Course Information"
+            app:layout_constraintStart_toStartOf="@+id/txtViewCourseInfo"
+            app:layout_constraintTop_toBottomOf="@+id/txtViewCourseInfo" />
+
+        <Spinner
+            android:id="@+id/viewCourseStatusSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseInfo" />
+
+        <TextView
+            android:id="@+id/lblViewCourseStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Course Status"
+            app:layout_constraintStart_toStartOf="@+id/viewCourseStatusSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/viewCourseStatusSpinner" />
+
+        <Spinner
+            android:id="@+id/viewCourseMentorSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblViewCourseStatus" />
+
+        <TextView
+            android:id="@+id/lblViewCourseMentor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Course Mentor"
+            app:layout_constraintStart_toStartOf="@+id/viewCourseMentorSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/viewCourseMentorSpinner" />
+
+        <Button
+            android:id="@+id/btnViewEditMentorInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="32dp"
+            android:text="View/Edit Mentor Info"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewCourseMentorSpinner" />
+
+        <Button
+            android:id="@+id/btnViewCourseNotes"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:text="View Notes"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toStartOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewEditMentorInfo" />
+
+        <Button
+            android:id="@+id/btnViewCourseAssessments"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:text="Assessments"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintStart_toEndOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewEditMentorInfo" />
+
+        <Button
+            android:id="@+id/btnViewCourseSaveChanges"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Save Changes"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintStart_toEndOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewCourseAssessments" />
+
+        <Button
+            android:id="@+id/btnViewCourseAlerts"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Alert Settings"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toStartOf="@+id/lblViewCourseAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewCourseNotes" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

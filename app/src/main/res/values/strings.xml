@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">WGU Companion</string>
+
+    <string name="intro_dialog_title">Welcome to your WGU Companion!</string>
+    <string name="intro_dialog_message">Please enter the following information to begin using the app:</string>
+    <string name="intro_dialog_name_label">Your first name:</string>
+    <string name="intro_dialog_degree_label">Your degree program:</string>
+
+    <string name="new_term_dialog">Add New Term</string>
+    <string name="new_term_dialog_title">Term title:</string>
+    <string name="new_term_dialog_start_date">Start date:</string>
+    <string name="new_term_dialog_end_date">End date:</string>
+
+    <string name="new_mentor_dialog_title">"Course Mentor Information"</string>
+    <string name="new_mentor_dialog_name">"Mentor Name:"</string>
+    <string name="new_mentor_dialog_email">"Email address:"</string>
+    <string name="new_mentor_dialog_phone">"Phone number:"</string>
+
+    <string name="title_activity_nav_drawer">NavDrawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string-array name="course_status">
+        <item>In progress</item>
+        <item>Completed</item>
+        <item>Dropped</item>
+        <item>Plan to take</item>
+    </string-array>
+
+</resources>

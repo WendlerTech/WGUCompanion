@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_terms"
+            android:icon="@drawable/ic_terms"
+            android:title="Terms" />
+
+        <item
+            android:id="@+id/nav_courses"
+            android:icon="@drawable/ic_courses"
+            android:title="Courses" />
+
+        <item
+            android:id="@+id/nav_assessments"
+            android:icon="@drawable/ic_assessment"
+            android:title="Assessments" />
+
+        <item
+            android:id="@+id/nav_progress"
+            android:icon="@drawable/ic_progress"
+            android:title="Progress" />
+
+        <item
+            android:id="@+id/nav_mentor"
+            android:icon="@drawable/ic_mentor"
+            android:title="Mentor" />
+    </group>
+</menu>
