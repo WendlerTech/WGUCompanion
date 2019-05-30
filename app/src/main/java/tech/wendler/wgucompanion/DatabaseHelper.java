@@ -181,6 +181,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(MENTOR_TABLE_NAME, null, contentValues);
     }
 
+    void updateMentor(Mentor mentorToUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String name, email, phone;
+        int mentorID;
+
+        name = mentorToUpdate.getMentorName();
+        email = mentorToUpdate.getMentorEmail();
+        phone = mentorToUpdate.getMentorPhoneNum();
+        mentorID = mentorToUpdate.getMentorID();
+
+        String queryString = "UPDATE " + MENTOR_TABLE_NAME +
+                " SET " + MENTOR_COL1 + " = '" + name + "', " +
+                MENTOR_COL2 + " = '" + email + "', " +
+                MENTOR_COL3 + " = '" + phone + "' WHERE " +
+                MENTOR_COL0 + " = " + mentorID + ";";
+
+        db.execSQL(queryString);
+        db.close();
+    }
+
     //Returns list of all existing mentors
     ArrayList<Mentor> getMentorList() {
         ArrayList<Mentor> mentorList = new ArrayList<>();
@@ -219,6 +240,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COURSE_COL7, courseToAdd.getEndDate());
 
         return db.insert(COURSE_TABLE_NAME, null, contentValues);
+    }
+
+    void updateCourse(Course courseToUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int courseID, mentorID, termID;
+        String status, title, info, startDate, endDate;
+
+        courseID = courseToUpdate.getCourseID();
+        mentorID = courseToUpdate.getMentorID();
+        termID = courseToUpdate.getTermID();
+        status = courseToUpdate.getCourseStatus();
+        title = courseToUpdate.getCourseTitle();
+        info = courseToUpdate.getCourseInfo();
+        startDate = courseToUpdate.getStartDate();
+        endDate = courseToUpdate.getEndDate();
+
+        String queryString = "UPDATE " + COURSE_TABLE_NAME +
+                " SET " + COURSE_COL1 + " = " + mentorID + ", " +
+                COURSE_COL2 + " = " + termID + ", " +
+                COURSE_COL3 + " = '" + status + "', "+
+                COURSE_COL4 + " = '" + title + "', "+
+                COURSE_COL5 + " = '" + info + "', "+
+                COURSE_COL6 + " = '" + startDate + "', "+
+                COURSE_COL7 + " = '" + endDate + "' WHERE " +
+                COURSE_COL0 + " = " + courseID + ";";
+
+        db.execSQL(queryString);
+        db.close();
     }
 
     void deleteCourse(int courseIdToDelete) {

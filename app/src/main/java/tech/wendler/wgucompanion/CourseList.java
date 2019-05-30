@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class CourseList extends Fragment {
@@ -41,7 +42,7 @@ public class CourseList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
-        floatingActionButton = view.findViewById(R.id.termFloatingBtn);
+        floatingActionButton = view.findViewById(R.id.courseFloatingBtn);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +114,6 @@ public class CourseList extends Fragment {
                     courseArrayList.add(course);
                 }
             }
-
         }
 
         return courseArrayList;
@@ -128,8 +128,8 @@ public class CourseList extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (adapter.getItemCount() != 0) {
-            Toast.makeText(getContext(), "Click to view course details & " +
-                    "\nlong press to delete.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Click to view course details," +
+                    "\nor long press to delete the course.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -151,9 +151,9 @@ public class CourseList extends Fragment {
     public void onResume() {
         super.onResume();
         if (showAllCourses) {
-            ((ViewCourses)getActivity()).setActionBarTitle("All Courses");
+            ((ViewCourses) getActivity()).setActionBarTitle("All Courses");
         } else {
-            ((ViewTerms)getActivity()).setActionBarTitle("Selected Term Courses");
+            ((ViewTerms) getActivity()).setActionBarTitle("Selected Term Courses");
         }
     }
 }

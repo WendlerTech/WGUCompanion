@@ -1,29 +1,39 @@
 package tech.wendler.wgucompanion;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
-
+import android.widget.TextView;
+import android.widget.Toast;
 import java.util.ArrayList;
 
 public class CourseDetails extends AppCompatActivity {
 
-    private Course selectedCourse = null;
+    private Course selectedCourse = null, updatedCourse;
     private EditText txtCourseTitle, txtStartMonth, txtStartYear, txtEndMonth, txtEndYear,
             txtCourseInfo;
     private Spinner courseStatusSpinner, courseMentorSpinner;
     private DatabaseHelper databaseHelper;
     private ConstraintLayout parentLayout;
-
+    private boolean mentorDataEntered = false;
     private ArrayAdapter<Mentor> mentorListAdapter;
     private ArrayAdapter<CharSequence> courseStatusAdapter;
     private ArrayList<Mentor> mentorList;
+    private Mentor selectedMentor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +78,71 @@ public class CourseDetails extends AppCompatActivity {
 
         populateData();
         handleDateTextWatchers();
+
+        btnEditMentorInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedMentor = (Mentor) courseMentorSpinner.getSelectedItem();
+                showNewMentorDialog();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Mentor selectedMentor = (Mentor) courseMentorSpinner.getSelectedItem();
+                if (txtCourseTitle.getText().toString().length() > 0 &&
+                        txtStartMonth.getText().toString().length() > 0 &&
+                        txtStartYear.getText().toString().length() > 0 &&
+                        txtEndMonth.getText().toString().length() > 0 &&
+                        txtEndYear.getText().toString().length() > 0 &&
+                        txtCourseInfo.getText().toString().length() > 0 &&
+                        courseStatusSpinner.getSelectedItem() != null &&
+                        selectedMentor != null) {
+                    updatedCourse = new Course();
+                    updatedCourse.setCourseID(selectedCourse.getCourseID());
+                    updatedCourse.setMentorID(selectedMentor.getMentorID());
+                    updatedCourse.setTermID(selectedCourse.getTermID());
+                    updatedCourse.setCourseStatus(courseStatusSpinner.getSelectedItem().toString());
+                    updatedCourse.setCourseTitle(txtCourseTitle.getText().toString());
+                    updatedCourse.setCourseInfo(txtCourseInfo.getText().toString());
+                    updatedCourse.setStartDate(txtStartMonth.getText().toString() +
+                            "-" + txtStartYear.getText().toString());
+                    updatedCourse.setEndDate(txtEndMonth.getText().toString() +
+                            "-" + txtEndYear.getText().toString());
+
+                    databaseHelper.updateCourse(updatedCourse);
+                    Toast.makeText(getApplicationContext(), "Course updated successfully.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ViewCourses.class);
+                    startActivity(intent);
+                } else {
+                    //Adds error messages highlighting blank fields
+                    if (txtCourseTitle.getText().toString().length() == 0) {
+                        txtCourseTitle.setError("Can't be blank.");
+                    }
+                    if (txtStartMonth.getText().toString().length() == 0) {
+                        txtStartMonth.setError("Can't be blank.");
+                    }
+                    if (txtStartYear.getText().toString().length() == 0) {
+                        txtStartYear.setError("Can't be blank.");
+                    } else if (txtStartYear.getText().toString().length() < 4) {
+                        txtStartYear.setError("Please enter a 4 digit year.");
+                    }
+                    if (txtEndMonth.getText().toString().length() == 0) {
+                        txtEndMonth.setError("Can't be blank.");
+                    }
+                    if (txtEndYear.getText().toString().length() == 0) {
+                        txtEndYear.setError("Can't be blank.");
+                    } else if (txtEndYear.getText().toString().length() < 4) {
+                        txtEndYear.setError("Please enter a 4 digit year.");
+                    }
+                    if (txtCourseInfo.getText().toString().length() == 0) {
+                        txtCourseInfo.setError("Can't be blank.");
+                    }
+                }
+            }
+        });
+
         parentLayout.requestFocus();
     }
 
@@ -97,6 +172,7 @@ public class CourseDetails extends AppCompatActivity {
         for (Mentor selectedMentor : mentorList) {
             if (selectedMentor.getMentorID() == selectedCourse.getMentorID()) {
                 courseMentorSpinner.setSelection(mentorListAdapter.getPosition(selectedMentor));
+                this.selectedMentor = selectedMentor;
             }
         }
         txtCourseTitle.setText(selectedCourse.getCourseTitle());
@@ -213,7 +289,186 @@ public class CourseDetails extends AppCompatActivity {
         });
     }
 
+    private void showNewMentorDialog() {
+        final AlertDialog.Builder mentorDialog = new AlertDialog.Builder(this);
+        TextView lblMentorName = new TextView(this);
+        TextView lblMentorEmail = new TextView(this);
+        TextView lblMentorPhone = new TextView(this);
+        final EditText txtMentorName = new EditText(this);
+        final EditText txtMentorEmail = new EditText(this);
+        final EditText txtMentorPhone = new EditText(this);
+
+        lblMentorName.setText(R.string.new_mentor_dialog_name);
+        lblMentorEmail.setText(R.string.new_mentor_dialog_email);
+        lblMentorPhone.setText(R.string.new_mentor_dialog_phone);
+
+        txtMentorName.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtMentorEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        txtMentorPhone.setInputType(InputType.TYPE_CLASS_PHONE);
+        txtMentorPhone.setMaxLines(1);
+
+        lblMentorName.setPadding(0, 40, 0, 0);
+        lblMentorEmail.setPadding(0, 40, 0, 0);
+        lblMentorPhone.setPadding(0, 40, 0, 0);
+
+        ScrollView scrollViewLayout = new ScrollView(this);
+        LinearLayout dialogLayout = new LinearLayout(this);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.addView(lblMentorName);
+        dialogLayout.addView(txtMentorName);
+        dialogLayout.addView(lblMentorEmail);
+        dialogLayout.addView(txtMentorEmail);
+        dialogLayout.addView(lblMentorPhone);
+        dialogLayout.addView(txtMentorPhone);
+
+        //Layout padding also shifts edit text fields
+        dialogLayout.setPadding(40, 0, 40, 0);
+
+        scrollViewLayout.addView(dialogLayout);
+        mentorDialog.setView(scrollViewLayout);
+        mentorDialog.setTitle("View/Update Mentor Information");
+
+        txtMentorName.setText(selectedMentor.getMentorName());
+        txtMentorEmail.setText(selectedMentor.getMentorEmail());
+        txtMentorPhone.setText(selectedMentor.getMentorPhoneNum());
+
+        mentorDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                selectedMentor.setMentorName(txtMentorName.getText().toString());
+                selectedMentor.setMentorEmail(txtMentorEmail.getText().toString());
+                selectedMentor.setMentorPhoneNum(txtMentorPhone.getText().toString());
+
+                databaseHelper.updateMentor(selectedMentor);
+                mentorDataEntered = true;
+                mentorListAdapter.notifyDataSetChanged();
+                courseMentorSpinner.setSelection(mentorListAdapter.getPosition(selectedMentor));
+                Toast.makeText(getApplicationContext(), "Mentor updated successfully.", Toast.LENGTH_SHORT).show();
+                parentLayout.requestFocus(); //Minimizes keyboard after entering new mentor
+            }
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //User cancelled, do nothing
+                    }
+                });
+
+        final AlertDialog alert = mentorDialog.create();
+
+        txtMentorName.addTextChangedListener(new TextWatcher() {
+            private void handleSubmitButton() {
+                final Button btnSubmit = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                if (mentorDataEntered) {
+                    btnSubmit.setEnabled(true);
+                } else {
+                    btnSubmit.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (txtMentorName.getText().toString().length() > 0 &&
+                        txtMentorEmail.getText().toString().length() > 0 &&
+                        txtMentorPhone.getText().toString().length() > 9) {
+                    mentorDataEntered = true;
+                } else {
+                    mentorDataEntered = false;
+                }
+                handleSubmitButton();
+            }
+        });
+
+        txtMentorEmail.addTextChangedListener(new TextWatcher() {
+            private void handleSubmitButton() {
+                final Button btnSubmit = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                if (mentorDataEntered) {
+                    btnSubmit.setEnabled(true);
+                } else {
+                    btnSubmit.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (txtMentorName.getText().toString().length() > 0 &&
+                        txtMentorEmail.getText().toString().length() > 0 &&
+                        txtMentorPhone.getText().toString().length() > 9) {
+                    mentorDataEntered = true;
+                } else {
+                    mentorDataEntered = false;
+                }
+                handleSubmitButton();
+
+            }
+        });
+
+        txtMentorPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher() {
+            private void handleSubmitButton() {
+                final Button btnSubmit = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                if (mentorDataEntered) {
+                    btnSubmit.setEnabled(true);
+                } else {
+                    btnSubmit.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (txtMentorName.getText().toString().length() > 0 &&
+                        txtMentorEmail.getText().toString().length() > 0 &&
+                        txtMentorPhone.getText().toString().length() > 9) {
+                    mentorDataEntered = true;
+                } else {
+                    mentorDataEntered = false;
+                }
+                handleSubmitButton();
+            }
+        });
+
+        alert.show();
+    }
+
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -139,8 +139,7 @@ public class NewCourse extends Fragment {
                     if (courseID != -1) {
                         newCourse.setCourseID(courseID);
                         Toast.makeText(getContext(), "Course added successfully.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getContext(), CourseDetails.class);
-                        intent.putExtra("selectedCourse", newCourse);
+                        Intent intent = new Intent(getContext(), ViewCourses.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getContext(), "Error saving course data.", Toast.LENGTH_SHORT).show();

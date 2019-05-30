@@ -46,68 +46,74 @@ public class TermRecyclerViewAdapter extends RecyclerView.Adapter<TermRecyclerVi
         String termTitle = termList.get(position).getTermTitle();
         String termStart = "Start: " + termList.get(position).getStartDate();
         String termEnd = "End: " + termList.get(position).getEndDate();
-        String courseCount = "Number of courses: " + termList.get(position).getNumberOfCourses();
+        int termID = termList.get(position).getTermID();
 
         viewHolder.lblTermTitle.setText(termTitle);
         viewHolder.lblTermStart.setText(termStart);
         viewHolder.lblTermEnd.setText(termEnd);
-        viewHolder.lblTermCourses.setText(courseCount);
 
         databaseHelper = new DatabaseHelper(mContext);
+        if (termID != 0) {
+            String courseCount = "Number of courses: " + termList.get(position).getNumberOfCourses();
+            viewHolder.lblTermCourses.setText(courseCount);
 
-        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("termID", termList.get(position).getTermID());
-                courseListFragment = CourseList.newInstance();
-                courseListFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.termsFrameLayout, courseListFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-
-        viewHolder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (termList.get(position).getNumberOfCourses() == 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-                    dialog.setTitle("Delete Term");
-                    dialog.setMessage("Warning!" + "\n\nAre you sure you want to delete this term? " +
-                            "This action cannot be undone.");
-                    dialog.setPositiveButton("Delete Term", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            int termIdToDelete = termList.get(position).getTermID();
-                            databaseHelper.deleteTerm(termIdToDelete);
-                            Toast.makeText(mContext, "Term deleted successfully.", Toast.LENGTH_SHORT).show();
-                            termList.remove(position);
-                            notifyItemRemoved(position);
-                        }
-                    })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //User cancelled, nothing happens
-                                }
-                            });
-                    final AlertDialog alert = dialog.create();
-                    alert.show();
-                    return true;
-                } else {
-                    //Can't delete
-                    AlertDialog.Builder failDeleteDialog = new AlertDialog.Builder(mContext);
-                    failDeleteDialog.setTitle("Error");
-                    failDeleteDialog.setMessage("You can't delete a term with courses assigned to it." +
-                            "\n\nRemove the courses first, then try again.");
-
-                    final AlertDialog alertDialog = failDeleteDialog.create();
-                    alertDialog.show();
-                    return true;
+            viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("termID", termList.get(position).getTermID());
+                    courseListFragment = CourseList.newInstance();
+                    courseListFragment.setArguments(bundle);
+                    fragmentTransaction.replace(R.id.termsFrameLayout, courseListFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
-            }
-        });
+            });
+
+            viewHolder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (termList.get(position).getNumberOfCourses() == 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                        dialog.setTitle("Delete Term");
+                        dialog.setMessage("Warning!" + "\n\nAre you sure you want to delete this term? " +
+                                "This action cannot be undone.");
+                        dialog.setPositiveButton("Delete Term", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                int termIdToDelete = termList.get(position).getTermID();
+                                databaseHelper.deleteTerm(termIdToDelete);
+                                Toast.makeText(mContext, "Term deleted successfully.", Toast.LENGTH_SHORT).show();
+                                termList.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, termList.size());
+                            }
+                        })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //User cancelled, nothing happens
+                                    }
+                                });
+                        final AlertDialog alert = dialog.create();
+                        alert.show();
+                        return true;
+                    } else {
+                        //Can't delete
+                        AlertDialog.Builder failDeleteDialog = new AlertDialog.Builder(mContext);
+                        failDeleteDialog.setTitle("Error");
+                        failDeleteDialog.setMessage("You can't delete a term with courses assigned to it." +
+                                "\n\nRemove the courses first, then try again.");
+
+                        final AlertDialog alertDialog = failDeleteDialog.create();
+                        alertDialog.show();
+                        return true;
+                    }
+                }
+            });
+        } else {
+            viewHolder.lblTermCourses.setText("You can add a new term by clicking below.");
+        }
     }
 
     public void refreshAdapterData() {

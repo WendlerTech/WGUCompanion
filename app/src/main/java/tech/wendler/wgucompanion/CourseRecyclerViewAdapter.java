@@ -85,7 +85,7 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
                             Toast.makeText(mContext, "Course deleted successfully.", Toast.LENGTH_SHORT).show();
                             courseList.remove(position);
                             notifyItemRemoved(position);
-
+                            notifyItemRangeChanged(position, courseList.size());
                         }
                     })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

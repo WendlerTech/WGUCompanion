@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class TermList extends Fragment {
@@ -35,6 +34,7 @@ public class TermList extends Fragment {
     private DatabaseHelper databaseHelper;
     private FloatingActionButton floatingActionButton;
     private TermRecyclerViewAdapter adapter;
+    private Term emptyTerm;
 
     public TermList() {
         // Required empty public constructor
@@ -100,8 +100,11 @@ public class TermList extends Fragment {
 
         try (Cursor cursor = databaseHelper.getData(queryString)) {
             if (!cursor.moveToFirst()) {
-                Term emptyTerm = new Term();
+                emptyTerm = new Term();
                 emptyTerm.setTermTitle("You haven't added any terms yet.");
+                emptyTerm.setStartDate("");
+                emptyTerm.setEndDate("");
+                termArrayList.add(emptyTerm);
             } else {
                 cursor.moveToPrevious();
                 while (cursor.moveToNext()) {
@@ -138,7 +141,8 @@ public class TermList extends Fragment {
         }
 
         if (adapter.getItemCount() != 0) {
-            Toast.makeText(getContext(), "Click to view a term's courses & \nlong press to delete.",
+            Toast.makeText(getContext(), "Click to view a term's courses," +
+                            "\nor long press to delete the term.",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -235,6 +239,10 @@ public class TermList extends Fragment {
                     //Adds new term to list & tells the recycler view to refresh
                     Term newlyAddedTerm = new Term(newlyAddedTermID, termTitle, termStartDate, termEndDate);
                     termArrayList.add(newlyAddedTerm);
+                    if (termArrayList.contains(emptyTerm)) {
+                        adapter.notifyItemRemoved(termArrayList.indexOf(emptyTerm));
+                        termArrayList.remove(emptyTerm);
+                    }
                     adapter.notifyItemInserted(termArrayList.indexOf(newlyAddedTerm));
 
                 } else {
