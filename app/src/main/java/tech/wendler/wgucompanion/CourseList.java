@@ -1,5 +1,6 @@
 package tech.wendler.wgucompanion;
 
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +22,7 @@ public class CourseList extends Fragment {
     private DatabaseHelper databaseHelper;
     private ArrayList<Course> courseArrayList;
     private FloatingActionButton floatingActionButton;
-    private int selectedTermID;
+    private Term selectedTerm;
     private boolean showAllCourses = false;
 
     public CourseList() {
@@ -57,9 +58,9 @@ public class CourseList extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         databaseHelper = new DatabaseHelper(getActivity());
-        Bundle selectedTerm = this.getArguments();
-        if (selectedTerm != null) {
-            selectedTermID = selectedTerm.getInt("termID");
+        Bundle selectedTermBundle = this.getArguments();
+        if (selectedTermBundle != null) {
+            this.selectedTerm = (Term)selectedTermBundle.getSerializable("selectedTerm");
             showAllCourses = false;
         } else {
             showAllCourses = true;
@@ -78,7 +79,7 @@ public class CourseList extends Fragment {
         String queryString;
 
         if (!showAllCourses) {
-            queryString = "SELECT * FROM Courses WHERE termID LIKE '" + selectedTermID + "';";
+            queryString = "SELECT * FROM Courses WHERE termID LIKE '" + selectedTerm.getTermID() + "';";
         } else {
             queryString = "SELECT * FROM Courses;";
         }
@@ -127,9 +128,14 @@ public class CourseList extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (adapter.getItemCount() != 0) {
-            Toast.makeText(getContext(), "Click to view course details," +
-                    "\nor long press to delete the course.", Toast.LENGTH_SHORT).show();
+        if (!showAllCourses) {
+            if (adapter.getItemCount() != 0) {
+                Toast.makeText(getContext(), "Click to view course details," +
+                        "\nor long press to delete the course.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "These are all of the courses you've added.\n" +
+                    "Return & select a term to add more.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -138,7 +144,7 @@ public class CourseList extends Fragment {
         FragmentTransaction fragmentTransaction;
         if (getFragmentManager() != null) {
             Bundle bundle = new Bundle();
-            bundle.putInt("selectedTermId", selectedTermID);
+            bundle.putSerializable("selectedTerm", selectedTerm);
             newCourseFragment.setArguments(bundle);
             fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.termsFrameLayout, newCourseFragment);
@@ -151,9 +157,23 @@ public class CourseList extends Fragment {
     public void onResume() {
         super.onResume();
         if (showAllCourses) {
-            ((ViewCourses) getActivity()).setActionBarTitle("All Courses");
+            if (getActivity() != null) {
+                ((ViewCourses) getActivity()).setActionBarTitle("Courses From All Terms");
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
         } else {
-            ((ViewTerms) getActivity()).setActionBarTitle("Selected Term Courses");
+            if (getActivity() != null) {
+                ((ViewTerms) getActivity()).setActionBarTitle("Courses in " + selectedTerm.getTermTitle());
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
     }
 }

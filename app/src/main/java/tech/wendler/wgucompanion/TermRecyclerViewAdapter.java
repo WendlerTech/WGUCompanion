@@ -24,6 +24,7 @@ public class TermRecyclerViewAdapter extends RecyclerView.Adapter<TermRecyclerVi
     private FragmentTransaction fragmentTransaction;
     private Fragment courseListFragment = null;
     private DatabaseHelper databaseHelper;
+    private Term selectedTerm;
 
     TermRecyclerViewAdapter(Context mContext, ArrayList<Term> termList,
                             FragmentTransaction fragmentTransaction) {
@@ -60,8 +61,9 @@ public class TermRecyclerViewAdapter extends RecyclerView.Adapter<TermRecyclerVi
             viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    selectedTerm = termList.get(position);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("termID", termList.get(position).getTermID());
+                    bundle.putSerializable("selectedTerm", selectedTerm);
                     courseListFragment = CourseList.newInstance();
                     courseListFragment.setArguments(bundle);
                     fragmentTransaction.replace(R.id.termsFrameLayout, courseListFragment);
@@ -114,10 +116,6 @@ public class TermRecyclerViewAdapter extends RecyclerView.Adapter<TermRecyclerVi
         } else {
             viewHolder.lblTermCourses.setText("You can add a new term by clicking below.");
         }
-    }
-
-    public void refreshAdapterData() {
-        notifyDataSetChanged();
     }
 
     @Override

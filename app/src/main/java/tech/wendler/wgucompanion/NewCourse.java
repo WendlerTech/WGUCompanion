@@ -3,6 +3,7 @@ package tech.wendler.wgucompanion;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -31,7 +32,8 @@ public class NewCourse extends Fragment {
     private Spinner existingMentorSpinner, courseStatusSpinner;
     private DatabaseHelper databaseHelper;
     private boolean mentorDataEntered = false;
-    private int enteredMentorId, selectedTermID;
+    private int enteredMentorId;
+    private Term selectedTerm;
     private Course newCourse;
     private ConstraintLayout newCourseLayout;
 
@@ -64,7 +66,7 @@ public class NewCourse extends Fragment {
 
         Bundle selectedTermBundle = this.getArguments();
         if (selectedTermBundle != null) {
-            selectedTermID = selectedTermBundle.getInt("selectedTermId");
+            this.selectedTerm = (Term)selectedTermBundle.getSerializable("selectedTerm");
         }
 
         databaseHelper = new DatabaseHelper(getActivity());
@@ -125,7 +127,7 @@ public class NewCourse extends Fragment {
                         selectedMentor != null) {
                     newCourse = new Course();
                     newCourse.setMentorID(selectedMentor.getMentorID());
-                    newCourse.setTermID(selectedTermID);
+                    newCourse.setTermID(selectedTerm.getTermID());
                     newCourse.setCourseStatus(courseStatusSpinner.getSelectedItem().toString());
                     newCourse.setCourseTitle(txtCourseTitle.getText().toString());
                     newCourse.setCourseInfo(txtCourseInfo.getText().toString());
@@ -139,7 +141,7 @@ public class NewCourse extends Fragment {
                     if (courseID != -1) {
                         newCourse.setCourseID(courseID);
                         Toast.makeText(getContext(), "Course added successfully.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getContext(), ViewCourses.class);
+                        Intent intent = new Intent(getContext(), ViewTerms.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getContext(), "Error saving course data.", Toast.LENGTH_SHORT).show();
@@ -176,7 +178,36 @@ public class NewCourse extends Fragment {
             }
         });
 
+        populateDates();
         handleDateTextWatchers();
+    }
+
+    private void populateDates() {
+        String startDate = selectedTerm.getStartDate();
+        String endDate = selectedTerm.getEndDate();
+        String startMonth, startYear, endMonth, endYear;
+
+        if (startDate.length() == 6) {
+            startMonth = startDate.substring(0, 1);
+            startYear = startDate.substring(2);
+        } else {
+            startMonth = startDate.substring(0, 2);
+            startYear = startDate.substring(3);
+        }
+
+        if (endDate.length() == 6) {
+            endMonth = endDate.substring(0, 1);
+            endYear = endDate.substring(2);
+
+        } else {
+            endMonth = endDate.substring(0, 2);
+            endYear = endDate.substring(3);
+        }
+
+        txtStartMonth.setText(startMonth);
+        txtStartYear.setText(startYear);
+        txtEndMonth.setText(endMonth);
+        txtEndYear.setText(endYear);
     }
 
     private void handleDateTextWatchers() {
@@ -297,7 +328,7 @@ public class NewCourse extends Fragment {
         lblMentorEmail.setText(R.string.new_mentor_dialog_email);
         lblMentorPhone.setText(R.string.new_mentor_dialog_phone);
 
-        txtMentorName.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtMentorName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         txtMentorEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         txtMentorPhone.setInputType(InputType.TYPE_CLASS_PHONE);
         txtMentorPhone.setMaxLines(1);
@@ -461,6 +492,17 @@ public class NewCourse extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((ViewTerms)getActivity()).setActionBarTitle("New Course");
+        if (getActivity() != null) {
+            ((ViewTerms) getActivity()).setActionBarTitle("New Course");
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        }
     }
 }

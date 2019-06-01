@@ -1,7 +1,8 @@
 package tech.wendler.wgucompanion;
 
+import java.io.Serializable;
 
-public class Term {
+public class Term implements Serializable {
 
     private int termID;
     private int numberOfCourses;

@@ -1,6 +1,7 @@
 package tech.wendler.wgucompanion;
 
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -68,7 +69,7 @@ public class TermList extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        databaseHelper = new DatabaseHelper(getActivity());
+        databaseHelper = new DatabaseHelper(getContext());
 
         termArrayList = populateTermList();
         openRecyclerView();
@@ -147,12 +148,6 @@ public class TermList extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((ViewTerms) getActivity()).setActionBarTitle("Terms");
-    }
-
     private void showNewTermDialog() {
         final AlertDialog.Builder newTermDialog = new AlertDialog.Builder(getContext());
         TextView lblTermTitle = new TextView(getContext());
@@ -176,7 +171,7 @@ public class TermList extends Fragment {
         txtYearStart.setInputType(InputType.TYPE_CLASS_NUMBER);
         txtMonthEnd.setInputType(InputType.TYPE_CLASS_NUMBER);
         txtYearEnd.setInputType(InputType.TYPE_CLASS_NUMBER);
-        txtTermTitle.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtTermTitle.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         txtMonthStart.setHint("MM");
         txtYearStart.setHint("YYYY");
@@ -224,10 +219,21 @@ public class TermList extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String termTitle, termStartDate, termEndDate;
 
-                termStartDate = txtMonthStart.getText().toString() + "-"
-                        + txtYearStart.getText().toString();
-                termEndDate = txtMonthEnd.getText().toString() + "-"
-                        + txtYearEnd.getText().toString();
+                if (Integer.parseInt(txtYearStart.getText().toString()) <= 50) {
+                    termStartDate = txtMonthStart.getText().toString() + "-20"
+                            + txtYearStart.getText().toString();
+                } else {
+                    termStartDate = txtMonthStart.getText().toString() + "-"
+                            + txtYearStart.getText().toString();
+                }
+                if (Integer.parseInt(txtYearEnd.getText().toString()) <= 50) {
+                    termEndDate = txtMonthEnd.getText().toString() + "-20"
+                            + txtYearEnd.getText().toString();
+                } else {
+                    termEndDate = txtMonthEnd.getText().toString() + "-"
+                            + txtYearEnd.getText().toString();
+                }
+
                 termTitle = txtTermTitle.getText().toString();
 
                 long dbInsertResult = databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate);
@@ -520,5 +526,22 @@ public class TermList extends Fragment {
         alert.show();
 
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null) {
+            ((ViewTerms) getActivity()).setActionBarTitle("Terms");
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        }
     }
 }

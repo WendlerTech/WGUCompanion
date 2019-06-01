@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -42,9 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean nameEntered = false;
     private boolean degreeEntered = false;
     private boolean endDateAfterStart = false;
-    private Button btnNewTerm, btnViewCurrentTerm;
+    private Button btnNewTerm;
     private TextView lblWelcomeName, lblWelcomeDegree;
-    private ProgressBar progressBar;
     private DatabaseHelper databaseHelper;
     SharedPreferences sp;
 
@@ -53,14 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
@@ -70,10 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lblWelcomeName = findViewById(R.id.lblWelcomeName);
         lblWelcomeDegree = findViewById(R.id.lblUserDegree);
         btnNewTerm = findViewById(R.id.btnNewTerm);
-        btnViewCurrentTerm = findViewById(R.id.btnViewCurrentTerm);
-        btnViewCurrentTerm = findViewById(R.id.btnViewCurrentTerm);
-        progressBar = findViewById(R.id.determinateBar);
-
 
         btnNewTerm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,12 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        btnViewCurrentTerm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.incrementProgressBy(10);
-            }
-        });
 
         sp = getSharedPreferences("FirstTimeInApp", Context.MODE_PRIVATE);
         boolean initialDataEntered = sp.getBoolean("isInitialDataEntered", false);
@@ -115,6 +105,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.nav_home);
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    toggle.setDrawerIndicatorEnabled(false);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onBackPressed();
+                        }
+                    });
+                } else {
+                    toggle.setDrawerIndicatorEnabled(true);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    toggle.syncState();
+                    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void showNewTermDialog() {
@@ -140,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         txtYearStart.setInputType(InputType.TYPE_CLASS_NUMBER);
         txtMonthEnd.setInputType(InputType.TYPE_CLASS_NUMBER);
         txtYearEnd.setInputType(InputType.TYPE_CLASS_NUMBER);
-        txtTermTitle.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtTermTitle.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         txtMonthStart.setHint("MM");
         txtYearStart.setHint("YYYY");
@@ -188,14 +204,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(DialogInterface dialogInterface, int i) {
                 String termTitle, termStartDate, termEndDate;
 
-                termStartDate = txtMonthStart.getText().toString() + "-"
-                        + txtYearStart.getText().toString();
-                termEndDate = txtMonthEnd.getText().toString() + "-"
-                        + txtYearEnd.getText().toString();
+                if (Integer.parseInt(txtYearStart.getText().toString()) <= 50) {
+                    termStartDate = txtMonthStart.getText().toString() + "-20"
+                            + txtYearStart.getText().toString();
+                } else {
+                    termStartDate = txtMonthStart.getText().toString() + "-"
+                            + txtYearStart.getText().toString();
+                }
+                if (Integer.parseInt(txtYearEnd.getText().toString()) <= 50) {
+                    termEndDate = txtMonthEnd.getText().toString() + "-20"
+                            + txtYearEnd.getText().toString();
+                } else {
+                    termEndDate = txtMonthEnd.getText().toString() + "-"
+                            + txtYearEnd.getText().toString();
+                }
+
                 termTitle = txtTermTitle.getText().toString();
 
                 if (databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate) != -1) {
                     Toast.makeText(getApplicationContext(), "Term added successfully.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ViewTerms.class);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Error saving term data.", Toast.LENGTH_SHORT).show();
                 }
@@ -484,8 +513,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lblMessage.setText(R.string.intro_dialog_message);
         lblName.setText(R.string.intro_dialog_name_label);
         lblDegree.setText(R.string.intro_dialog_degree_label);
-        txtName.setInputType(InputType.TYPE_CLASS_TEXT);
-        txtDegree.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        txtDegree.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         lblMessage.setPadding(30, 40, 30, 40);
         lblName.setPadding(0, 40, 0, 0);

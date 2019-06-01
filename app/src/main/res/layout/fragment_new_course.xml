@@ -160,9 +160,10 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
+            android:background="@color/offWhite"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textCapSentences"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
@@ -199,9 +200,11 @@
             android:layout_height="40dp"
             android:layout_marginStart="3dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
             android:paddingTop="8dp"
             android:text="Submit"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/alignmentTxtView"
             app:layout_constraintTop_toBottomOf="@+id/btnAddNewMentorInfo" />
 

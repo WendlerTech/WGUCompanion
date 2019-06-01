@@ -1,5 +1,6 @@
 package tech.wendler.wgucompanion;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,6 +37,7 @@ public class CourseDetails extends AppCompatActivity {
     private ArrayList<Mentor> mentorList;
     private Mentor selectedMentor;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,15 @@ public class CourseDetails extends AppCompatActivity {
             }
         });
 
+        btnViewNotes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ViewNotes.class);
+                intent.putExtra("selectedCourse", selectedCourse);
+                startActivity(intent);
+            }
+        });
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +125,7 @@ public class CourseDetails extends AppCompatActivity {
 
                     databaseHelper.updateCourse(updatedCourse);
                     Toast.makeText(getApplicationContext(), "Course updated successfully.", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), ViewCourses.class);
+                    Intent intent = new Intent(getApplicationContext(), ViewTerms.class);
                     startActivity(intent);
                 } else {
                     //Adds error messages highlighting blank fields
@@ -143,45 +155,64 @@ public class CourseDetails extends AppCompatActivity {
             }
         });
 
+        //Allows scrolling within edit text
+        txtCourseInfo.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (txtCourseInfo.hasFocus()) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_SCROLL:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         parentLayout.requestFocus();
     }
 
     private void populateData() {
-        String startDate = selectedCourse.getStartDate();
-        String endDate = selectedCourse.getEndDate();
-        String startMonth, startYear, endMonth, endYear;
-
-        if (startDate.length() == 6) {
-            startMonth = startDate.substring(0, 1);
-            startYear = startDate.substring(2);
+        if (selectedCourse == null) {
+            Intent intent = new Intent(getApplicationContext(), ViewTerms.class);
+            startActivity(intent);
         } else {
-            startMonth = startDate.substring(0, 2);
-            startYear = startDate.substring(3);
-        }
+            String startDate = selectedCourse.getStartDate();
+            String endDate = selectedCourse.getEndDate();
+            String startMonth, startYear, endMonth, endYear;
 
-        if (endDate.length() == 6) {
-            endMonth = endDate.substring(0, 1);
-            endYear = endDate.substring(2);
-
-        } else {
-            endMonth = endDate.substring(0, 2);
-            endYear = endDate.substring(3);
-
-        }
-
-        for (Mentor selectedMentor : mentorList) {
-            if (selectedMentor.getMentorID() == selectedCourse.getMentorID()) {
-                courseMentorSpinner.setSelection(mentorListAdapter.getPosition(selectedMentor));
-                this.selectedMentor = selectedMentor;
+            if (startDate.length() == 6) {
+                startMonth = startDate.substring(0, 1);
+                startYear = startDate.substring(2);
+            } else {
+                startMonth = startDate.substring(0, 2);
+                startYear = startDate.substring(3);
             }
+
+            if (endDate.length() == 6) {
+                endMonth = endDate.substring(0, 1);
+                endYear = endDate.substring(2);
+            } else {
+                endMonth = endDate.substring(0, 2);
+                endYear = endDate.substring(3);
+            }
+
+            for (Mentor selectedMentor : mentorList) {
+                if (selectedMentor.getMentorID() == selectedCourse.getMentorID()) {
+                    courseMentorSpinner.setSelection(mentorListAdapter.getPosition(selectedMentor));
+                    this.selectedMentor = selectedMentor;
+                }
+            }
+            txtCourseTitle.setText(selectedCourse.getCourseTitle());
+            txtStartMonth.setText(startMonth);
+            txtStartYear.setText(startYear);
+            txtEndMonth.setText(endMonth);
+            txtEndYear.setText(endYear);
+            txtCourseInfo.setText(selectedCourse.getCourseInfo());
+            courseStatusSpinner.setSelection(courseStatusAdapter.getPosition(selectedCourse.getCourseStatus()));
         }
-        txtCourseTitle.setText(selectedCourse.getCourseTitle());
-        txtStartMonth.setText(startMonth);
-        txtStartYear.setText(startYear);
-        txtEndMonth.setText(endMonth);
-        txtEndYear.setText(endYear);
-        txtCourseInfo.setText(selectedCourse.getCourseInfo());
-        courseStatusSpinner.setSelection(courseStatusAdapter.getPosition(selectedCourse.getCourseStatus()));
     }
 
     private void handleDateTextWatchers() {
@@ -302,7 +333,7 @@ public class CourseDetails extends AppCompatActivity {
         lblMentorEmail.setText(R.string.new_mentor_dialog_email);
         lblMentorPhone.setText(R.string.new_mentor_dialog_phone);
 
-        txtMentorName.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtMentorName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         txtMentorEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         txtMentorPhone.setInputType(InputType.TYPE_CLASS_PHONE);
         txtMentorPhone.setMaxLines(1);

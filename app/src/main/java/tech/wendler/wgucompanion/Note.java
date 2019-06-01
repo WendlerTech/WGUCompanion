@@ -1,18 +1,23 @@
 package tech.wendler.wgucompanion;
 
-public class Note {
+import java.io.Serializable;
+
+public class Note implements Serializable {
 
     private int noteID;
     private int courseID;
     private String note;
+    private String noteTitle;
 
     public Note() {
 
     }
 
-    public Note(String note, int course) {
-        courseID = course;
+    public Note(int noteID, int courseID, String note, String noteTitle) {
+        this.noteID = noteID;
+        this.courseID = courseID;
         this.note = note;
+        this.noteTitle = noteTitle;
     }
 
     public int getNoteID() {
@@ -37,5 +42,13 @@ public class Note {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getNoteTitle() {
+        return noteTitle;
+    }
+
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
 }

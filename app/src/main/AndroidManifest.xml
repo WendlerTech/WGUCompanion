@@ -4,7 +4,7 @@
     package="tech.wendler.wgucompanion">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -53,7 +53,13 @@
         <activity android:name=".CourseDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ViewCourses"/>
+                android:value=".ViewTerms"/>
+        </activity>
+
+        <activity android:name=".ViewNotes">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ViewTerms"/>
         </activity>
 
     </application>

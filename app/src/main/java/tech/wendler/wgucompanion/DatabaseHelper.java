@@ -41,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final static String NOTE_COL0 = "noteID";
     private final static String NOTE_COL1 = "courseID";
     private final static String NOTE_COL2 = "note";
+    private final static String NOTE_COL3 = "noteTitle";
 
     private final static String MENTOR_TABLE_NAME = "Mentors";
     private final static String MENTOR_COL0 = "mentorID";
@@ -87,7 +88,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createNoteTable = "CREATE TABLE " + NOTE_TABLE_NAME + " (" +
                 NOTE_COL0 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NOTE_COL1 + " INTEGER, " +
-                NOTE_COL2 + " STRING);";
+                NOTE_COL2 + " STRING, " +
+                NOTE_COL3 + " STRING);";
 
         String createMentorTable = "CREATE TABLE " + MENTOR_TABLE_NAME + " (" +
                 MENTOR_COL0 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -276,6 +278,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String queryString = "DELETE FROM " + COURSE_TABLE_NAME + " WHERE " +
                 COURSE_COL0 + " = " + courseIdToDelete + ";";
+        db.execSQL(queryString);
+        db.close();
+    }
+
+    //Saves new note, returns newly created note ID
+    long addNewNote(Note noteToAdd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NOTE_COL1, noteToAdd.getCourseID());
+        contentValues.put(NOTE_COL2, noteToAdd.getNote());
+        contentValues.put(NOTE_COL3, noteToAdd.getNoteTitle());
+
+        return db.insert(NOTE_TABLE_NAME, null, contentValues);
+    }
+
+    void updateNote(Note noteToUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int noteID, courseID;
+        String noteTitle, noteContent;
+
+        noteID = noteToUpdate.getNoteID();
+        courseID = noteToUpdate.getCourseID();
+        noteTitle = noteToUpdate.getNoteTitle();
+        noteContent = noteToUpdate.getNote();
+
+        String queryString = "UPDATE " + NOTE_TABLE_NAME +
+                " SET " + NOTE_COL1 + " = " + courseID + ", " +
+                NOTE_COL2 + " = '" + noteContent + "', " +
+                NOTE_COL3 + " = '" + noteTitle + "' WHERE " +
+                NOTE_COL0 + " = " + noteID + ";";
+
+        db.execSQL(queryString);
+        db.close();
+    }
+
+    void deleteNote(int noteIdToDelete) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String queryString = "DELETE FROM " + NOTE_TABLE_NAME + " WHERE " +
+                NOTE_COL0 + " = " + noteIdToDelete + ";";
         db.execSQL(queryString);
         db.close();
     }
