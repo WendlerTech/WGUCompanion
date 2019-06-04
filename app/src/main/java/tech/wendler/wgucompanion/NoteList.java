@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class NoteList extends Fragment {
 
-    private FloatingActionButton noteFloatingButton;
     private DatabaseHelper databaseHelper;
     private Course selectedCourse;
     private ArrayList<Note> noteList;
@@ -40,7 +39,7 @@ public class NoteList extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
-        noteFloatingButton = view.findViewById(R.id.noteFloatingBtn);
+        FloatingActionButton noteFloatingButton = view.findViewById(R.id.noteFloatingBtn);
         noteFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -62,6 +62,24 @@
                 android:value=".ViewTerms"/>
         </activity>
 
+        <activity android:name=".ViewCourseNotification">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CourseDetails"/>
+        </activity>
+
+
+        <receiver android:name=".DeviceBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmReceiver" />
+
     </application>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 </manifest>

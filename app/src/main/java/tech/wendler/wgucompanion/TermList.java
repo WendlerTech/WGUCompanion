@@ -33,7 +33,6 @@ public class TermList extends Fragment {
     private ArrayList<Term> termArrayList;
     private ArrayList<Course> courseArrayList;
     private DatabaseHelper databaseHelper;
-    private FloatingActionButton floatingActionButton;
     private TermRecyclerViewAdapter adapter;
     private Term emptyTerm;
 
@@ -55,7 +54,7 @@ public class TermList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_term_list, container, false);
-        floatingActionButton = view.findViewById(R.id.termFloatingBtn);
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.termFloatingBtn);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -99,6 +99,15 @@ public class CourseDetails extends AppCompatActivity {
             }
         });
 
+        btnAlertSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ViewCourseNotification.class);
+                intent.putExtra("selectedCourse", selectedCourse);
+                startActivity(intent);
+            }
+        });
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
