@@ -323,4 +323,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(queryString);
         db.close();
     }
+
+    //Saves new assessment, returns newly created assessment ID
+    long addNewAssessment(Assessment assessmentToAdd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ASSESSMENT_COL1, assessmentToAdd.getCourseID());
+        contentValues.put(ASSESSMENT_COL2, assessmentToAdd.getAssessmentTitle());
+        contentValues.put(ASSESSMENT_COL3, assessmentToAdd.getGoalDate());
+        contentValues.put(ASSESSMENT_COL4, assessmentToAdd.getDueDate());
+        contentValues.put(ASSESSMENT_COL5, assessmentToAdd.getAssessmentInfo());
+        contentValues.put(ASSESSMENT_COL6, assessmentToAdd.isObjective());
+
+        return db.insert(ASSESSMENT_TABLE_NAME, null, contentValues);
+    }
+
+    void updateAssessment(Assessment assessmentToUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int assessmentID, courseID, isObjective;
+        String title, info, goalDate, dueDate;
+
+        assessmentID = assessmentToUpdate.getAssessmentID();
+        courseID = assessmentToUpdate.getCourseID();
+        title = assessmentToUpdate.getAssessmentTitle();
+        info = assessmentToUpdate.getAssessmentInfo();
+        goalDate = assessmentToUpdate.getGoalDate();
+        dueDate = assessmentToUpdate.getDueDate();
+
+        if (assessmentToUpdate.isObjective()) {
+            isObjective = 1;
+        } else {
+            isObjective = 0;
+        }
+
+        String queryString = "UPDATE " + ASSESSMENT_TABLE_NAME + " SET " +
+                ASSESSMENT_COL1 + " = " + courseID + ", " +
+                ASSESSMENT_COL2 + " = '" + title + "', " +
+                ASSESSMENT_COL3 + " = '" + goalDate + "', " +
+                ASSESSMENT_COL4 + " = '" + dueDate + "', " +
+                ASSESSMENT_COL5 + " = '" + info + "', " +
+                ASSESSMENT_COL6 + " = " + isObjective + " WHERE " +
+                ASSESSMENT_COL0 + " = " + assessmentID + ";";
+
+        db.execSQL(queryString);
+        db.close();
+    }
+
+    void deleteAssessment(int assessmentIdToDelete) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String queryString = "DELETE FROM " + ASSESSMENT_TABLE_NAME + " WHERE " +
+                ASSESSMENT_COL0 + " = " + assessmentIdToDelete + ";";
+        db.execSQL(queryString);
+        db.close();
+    }
 }

@@ -1,28 +1,29 @@
 package tech.wendler.wgucompanion;
 
-import java.time.LocalDate;
+import java.io.Serializable;
 
-public class Assessment {
+public class Assessment implements Serializable {
 
     private int assessmentID;
     private int courseID;
     private String assessmentTitle;
     private String assessmentInfo;
-    private LocalDate goalDate;
-    private LocalDate dueDate;
+    private String goalDate;
+    private String dueDate;
     private boolean isObjective;
 
     public Assessment() {
 
     }
 
-    public Assessment(String title, String info, LocalDate goal, LocalDate due, boolean isObjective,
-                      int course) {
-        assessmentTitle = title;
-        assessmentInfo = info;
-        goalDate = goal;
-        dueDate = due;
-        courseID = course;
+    public Assessment(int assessmentID, int courseID, String title, String info, String goalDate,
+                      String dueDate, boolean isObjective) {
+        this.assessmentID = assessmentID;
+        this.courseID = courseID;
+        this.assessmentTitle = title;
+        this.assessmentInfo = info;
+        this.goalDate = goalDate;
+        this.dueDate = dueDate;
         this.isObjective = isObjective;
     }
 
@@ -58,19 +59,19 @@ public class Assessment {
         this.assessmentInfo = assessmentInfo;
     }
 
-    public LocalDate getGoalDate() {
+    public String getGoalDate() {
         return goalDate;
     }
 
-    public void setGoalDate(LocalDate goalDate) {
+    public void setGoalDate(String goalDate) {
         this.goalDate = goalDate;
     }
 
-    public LocalDate getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 

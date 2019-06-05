@@ -9,4 +9,5 @@
         android:key="notifyCourseEnd"
         android:title="Course End Date Notification"
         android:defaultValue="false" />
+
 </PreferenceScreen>

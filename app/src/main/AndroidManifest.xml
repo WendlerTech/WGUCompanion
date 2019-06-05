@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,53 +24,54 @@
         <activity android:name=".ViewTerms">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
         <activity android:name=".ViewCourses">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
         <activity android:name=".ViewAssessments">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
         <activity android:name=".ViewProgress">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
         <activity android:name=".ViewMentor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
 
         <activity android:name=".CourseDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ViewTerms"/>
+                android:value=".ViewTerms" />
         </activity>
 
         <activity android:name=".ViewNotes">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ViewTerms"/>
+                android:value=".ViewTerms" />
         </activity>
 
         <activity android:name=".ViewCourseNotification">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CourseDetails"/>
+                android:value=".CourseDetails" />
         </activity>
 
 
-        <receiver android:name=".DeviceBootReceiver"
+        <receiver
+            android:name=".DeviceBootReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

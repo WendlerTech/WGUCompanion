@@ -10,8 +10,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,10 +26,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NewCourseNotification extends Fragment {
 
-    private SwitchPreference switchPreferenceStartDate;
     private Switch switchStartDate, switchEndDate;
 
     private boolean notifyOnStartDate, notifyOnEndDate;
+    private Course selectedCourse;
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
@@ -70,14 +68,35 @@ public class NewCourseNotification extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Bundle courseBundle = this.getArguments();
+        if (courseBundle != null) {
+            selectedCourse = (Course) courseBundle.getSerializable("selectedCourse");
+        }
+
         switchStartDate = getActivity().findViewById(R.id.switchNewNotifyStartDate);
         switchEndDate = getActivity().findViewById(R.id.switchNewNotifyEndDate);
+
+        packageManager = getActivity().getPackageManager();
+        receiver = new ComponentName(getActivity(), DeviceBootReceiver.class);
+        alarmIntent = new Intent(getContext(), AlarmReceiver.class);
+        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
         switchStartDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 savePreferences();
                 loadPreferences();
+                courseStartNotificationContent();
+                handleNotifications();
+            }
+        });
+
+        switchEndDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                savePreferences();
+                loadPreferences();
+                courseEndNotificationContent();
                 handleNotifications();
             }
         });
@@ -88,13 +107,11 @@ public class NewCourseNotification extends Fragment {
     }
 
     public void handleNotifications() {
-        packageManager = getActivity().getPackageManager();
-        receiver = new ComponentName(getActivity(), DeviceBootReceiver.class);
-        alarmIntent = new Intent(getContext(), AlarmReceiver.class);
-        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, 0);
+        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (notifyOnStartDate) {
+        //Checks to make sure at least 1 switch was turned on
+        if (notifyOnStartDate || notifyOnEndDate) {
+            //User-selected date & time get added here
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, START_DATE_NOTIFY_HOUR);
@@ -109,7 +126,7 @@ public class NewCourseNotification extends Fragment {
                 //Creates notification at specific time defined in calendar object
                 //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
-                //Creates notification in 10 seconds
+                //Creates notification in 5 seconds
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
             }
 
@@ -118,6 +135,7 @@ public class NewCourseNotification extends Fragment {
                     PackageManager.DONT_KILL_APP);
 
         } else {
+            //If both switches are off, cancels any pending notifications
             if (PendingIntent.getBroadcast(getContext(), 0, alarmIntent, 0) != null && alarmManager != null) {
                 alarmManager.cancel(pendingIntent);
             }
@@ -129,6 +147,21 @@ public class NewCourseNotification extends Fragment {
 
     }
 
+    //Sets notification text to course start
+    private void courseStartNotificationContent() {
+        alarmIntent.putExtra("title", "Course Reminder");
+        alarmIntent.putExtra("content", "Your course, " + selectedCourse.getCourseTitle()
+                + ", is starting soon!");
+    }
+
+    //Sets notification text to course end
+    private void courseEndNotificationContent() {
+        alarmIntent.putExtra("title", "Course Reminder");
+        alarmIntent.putExtra("content", "Your course, " + selectedCourse.getCourseTitle()
+                + ", is ending soon!");
+    }
+
+    //Saves user switch selection
     public void savePreferences() {
         if (getActivity() != null) {
             SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
@@ -142,12 +175,14 @@ public class NewCourseNotification extends Fragment {
         }
     }
 
+    //Assigns user switch selection to local booleans
     public void loadPreferences() {
         SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         notifyOnStartDate = preferences.getBoolean(NOTIFY_START_DATE, false);
         notifyOnEndDate = preferences.getBoolean(NOTIFY_END_DATE, false);
     }
 
+    //Changes switch views to previously user-selected value
     public void updateViewsFromPreferences() {
         switchStartDate.setChecked(notifyOnStartDate);
         switchEndDate.setChecked(notifyOnEndDate);
