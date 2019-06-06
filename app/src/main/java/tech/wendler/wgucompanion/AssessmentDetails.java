@@ -1,5 +1,11 @@
 package tech.wendler.wgucompanion;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +21,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 public class AssessmentDetails extends Fragment {
 
     private Assessment selectedAssessment;
@@ -25,6 +33,12 @@ public class AssessmentDetails extends Fragment {
     private RadioButton radBtnObjective, radBtnPerformance;
     private Course selectedCourse;
     private Fragment assessmentFragment;
+
+    private AlarmManager startAlarmManager, endAlarmManager;
+    private PendingIntent startPendingIntent, endPendingIntent;
+    private Intent alarmIntent;
+    private PackageManager packageManager;
+    private ComponentName receiver;
 
     public AssessmentDetails() {
 
@@ -134,6 +148,22 @@ public class AssessmentDetails extends Fragment {
                         txtInformation.setError("You must enter information");
                     }
                 }
+            }
+        });
+
+        packageManager = getActivity().getPackageManager();
+        receiver = new ComponentName(getActivity(), DeviceBootReceiver.class);
+        alarmIntent = new Intent(getContext(), AlarmReceiver.class);
+        startAlarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        endAlarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        btnCreateAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar alertCal = Calendar.getInstance();
+                alertCal.setTimeInMillis(System.currentTimeMillis());
+
+
             }
         });
     }

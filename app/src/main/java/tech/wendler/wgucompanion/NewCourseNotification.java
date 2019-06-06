@@ -5,45 +5,34 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class NewCourseNotification extends Fragment {
 
-    private Switch switchStartDate, switchEndDate;
-
-    private boolean notifyOnStartDate, notifyOnEndDate;
+    private boolean notifyOnStartDate = false, notifyOnEndDate = false,
+            startNotificationSet = false, endNotificationSet = false;
+    private int calStartMonth, calStartYear, calEndMonth, calEndYear;
     private Course selectedCourse;
-
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
+    private AlarmManager startAlarmManager, endAlarmManager;
+    private PendingIntent startPendingIntent, endPendingIntent;
     private Intent alarmIntent;
     private PackageManager packageManager;
     private ComponentName receiver;
-
-    public static final String SHARED_PREFERENCES = "sharedPreferences";
-    public static final String NOTIFY_START_DATE = "notifyOnStartDate";
-    public static final String NOTIFY_END_DATE = "notifyOnEndDate";
-    public static final int START_DATE_NOTIFY_HOUR = 13;
-    public static final int START_DATE_NOTIFY_MINUTE = 30;
-    public static final int END_DATE_NOTIFY_HOUR = 13;
-    public static final int END_DATE_NOTIFY_MINUTE = 30;
+    private Button btnStartDateNotify, btnEndDateNotify;
 
     public NewCourseNotification() {
 
@@ -73,78 +62,161 @@ public class NewCourseNotification extends Fragment {
             selectedCourse = (Course) courseBundle.getSerializable("selectedCourse");
         }
 
-        switchStartDate = getActivity().findViewById(R.id.switchNewNotifyStartDate);
-        switchEndDate = getActivity().findViewById(R.id.switchNewNotifyEndDate);
+        TextView lblCourseTitle = getActivity().findViewById(R.id.lblNewNotifyCourseTitle);
+        TextView lblStartDate = getActivity().findViewById(R.id.lblNewNotifyStartDate);
+        TextView lblEndDate = getActivity().findViewById(R.id.lblNewNotifyEndDate);
+        btnStartDateNotify = getActivity().findViewById(R.id.btnNotifyCourseStart);
+        btnEndDateNotify = getActivity().findViewById(R.id.btnNotifyCourseEnd);
+        Button btnCancelNotify = getActivity().findViewById(R.id.btnCancelCourseNotify);
+
+        //Splits date strings into month/year
+        String startDate = selectedCourse.getStartDate();
+        String endDate = selectedCourse.getEndDate();
+        String startMonth, startYear, endMonth, endYear;
+        if (startDate.length() == 6) {
+            startMonth = startDate.substring(0, 1);
+            startYear = startDate.substring(2);
+        } else {
+            startMonth = startDate.substring(0, 2);
+            startYear = startDate.substring(3);
+        }
+
+        if (endDate.length() == 6) {
+            endMonth = endDate.substring(0, 1);
+            endYear = endDate.substring(2);
+        } else {
+            endMonth = endDate.substring(0, 2);
+            endYear = endDate.substring(3);
+        }
+
+        try {
+            //Converts month/year into integers
+            calStartMonth = Integer.parseInt(startMonth);
+            calStartYear = Integer.parseInt(startYear);
+            calEndMonth = Integer.parseInt(endMonth);
+            calEndYear = Integer.parseInt(endYear);
+        } catch (NumberFormatException ignored) {
+
+        }
+
+        lblCourseTitle.setText(selectedCourse.getCourseTitle());
+        lblStartDate.setText("Start date: " + selectedCourse.getStartDate());
+        lblEndDate.setText("End date: " + selectedCourse.getEndDate());
 
         packageManager = getActivity().getPackageManager();
         receiver = new ComponentName(getActivity(), DeviceBootReceiver.class);
         alarmIntent = new Intent(getContext(), AlarmReceiver.class);
-        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        startAlarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        endAlarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
-        switchStartDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnStartDateNotify.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                savePreferences();
-                loadPreferences();
+            public void onClick(View view) {
                 courseStartNotificationContent();
+                notifyOnStartDate = true;
+                //Avoids issues with using multiple pending intent values
+                alarmIntent.setAction(Long.toString(System.currentTimeMillis()));
                 handleNotifications();
+                //Changes button color to signify notification has been turned on
+                btnStartDateNotify.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.greenBtn));
+                btnStartDateNotify.setTextColor(ContextCompat.getColor(getContext(), R.color.offWhite));
             }
         });
 
-        switchEndDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnEndDateNotify.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                savePreferences();
-                loadPreferences();
+            public void onClick(View view) {
                 courseEndNotificationContent();
+                notifyOnEndDate = true;
+                alarmIntent.setAction(Long.toString(System.currentTimeMillis()));
                 handleNotifications();
+                btnEndDateNotify.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.greenBtn));
+                btnEndDateNotify.setTextColor(ContextCompat.getColor(getContext(), R.color.offWhite));
             }
         });
 
-        loadPreferences();
-        updateViewsFromPreferences();
-
+        btnCancelNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyOnStartDate = false;
+                notifyOnEndDate = false;
+                handleNotifications();
+                btnStartDateNotify.setTextColor(ContextCompat.getColor(getContext(), R.color.defaultBtnText));
+                btnStartDateNotify.setBackgroundColor((ContextCompat.getColor(getContext(), R.color.defaultBtnBg)));
+                btnEndDateNotify.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.defaultBtnBg));
+                btnEndDateNotify.setTextColor(ContextCompat.getColor(getContext(), R.color.defaultBtnText));
+            }
+        });
     }
 
     public void handleNotifications() {
-        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        startPendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        endPendingIntent = PendingIntent.getBroadcast(getContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Checks to make sure at least 1 switch was turned on
+        //Checks to make sure at least 1 button was pressed
         if (notifyOnStartDate || notifyOnEndDate) {
-            //User-selected date & time get added here
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, START_DATE_NOTIFY_HOUR);
-            calendar.set(Calendar.MINUTE, START_DATE_NOTIFY_MINUTE);
-            calendar.set(Calendar.SECOND, 1);
+            Calendar startCalendar = Calendar.getInstance();
+            Calendar endCalendar = Calendar.getInstance();
+            startCalendar.setTimeInMillis(System.currentTimeMillis());
+            endCalendar.setTimeInMillis(System.currentTimeMillis());
 
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DATE, 1);
+            //Sets calendars to course start & end dates
+            if (notifyOnStartDate) {
+                //First day of course start month at 9:30AM
+                startCalendar.set(Calendar.MONTH, calStartMonth - 1);
+                startCalendar.set(Calendar.YEAR, calStartYear);
+                startCalendar.set(Calendar.DAY_OF_MONTH, 1);
+                startCalendar.set(Calendar.HOUR_OF_DAY, 9);
+                startCalendar.set(Calendar.MINUTE, 30);
+                startCalendar.set(Calendar.SECOND, 1);
+            }
+            if (notifyOnEndDate) {
+                //Last day of course end month at 9:30AM
+                endCalendar.set(Calendar.MONTH, calEndMonth - 1);
+                endCalendar.set(Calendar.YEAR, calEndYear);
+                endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                endCalendar.set(Calendar.HOUR_OF_DAY, 9);
+                endCalendar.set(Calendar.MINUTE, 30);
+                endCalendar.set(Calendar.SECOND, 1);
             }
 
-            if (alarmManager != null) {
-                //Creates notification at specific time defined in calendar object
-                //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
-                //Creates notification in 5 seconds
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
+            if (startAlarmManager != null) {
+                if (!startNotificationSet && notifyOnStartDate) {
+                    //Creates notification at specific time defined in calendar object
+                    startAlarmManager.set(AlarmManager.RTC_WAKEUP, startCalendar.getTimeInMillis(), startPendingIntent);
+                    startNotificationSet = true;
+                    Toast.makeText(getContext(), "You'll receive a notification on: "
+                            + startCalendar.getTime().toString(), Toast.LENGTH_LONG).show();
+                }
             }
-
+            if (endAlarmManager != null) {
+                if (!endNotificationSet && notifyOnEndDate) {
+                    //Creates notification at specific time defined in calendar object
+                    endAlarmManager.set(AlarmManager.RTC_WAKEUP, endCalendar.getTimeInMillis(), endPendingIntent);
+                    endNotificationSet = true;
+                    Toast.makeText(getContext(), "You'll receive a notification on: "
+                            + endCalendar.getTime().toString(), Toast.LENGTH_LONG).show();
+                }
+            }
             packageManager.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
 
         } else {
-            //If both switches are off, cancels any pending notifications
-            if (PendingIntent.getBroadcast(getContext(), 0, alarmIntent, 0) != null && alarmManager != null) {
-                alarmManager.cancel(pendingIntent);
+            //Cancels any pending notifications
+            if (PendingIntent.getBroadcast(getContext(), 0, alarmIntent, 0) != null
+                    && startAlarmManager != null && endAlarmManager != null) {
+                startAlarmManager.cancel(startPendingIntent);
+                endAlarmManager.cancel(endPendingIntent);
+                startNotificationSet = false;
+                endNotificationSet = false;
+                Toast.makeText(getContext(), "All pending notifications have been cancelled.",
+                        Toast.LENGTH_LONG).show();
             }
         }
-
         packageManager.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
-
     }
 
     //Sets notification text to course start
@@ -159,33 +231,6 @@ public class NewCourseNotification extends Fragment {
         alarmIntent.putExtra("title", "Course Reminder");
         alarmIntent.putExtra("content", "Your course, " + selectedCourse.getCourseTitle()
                 + ", is ending soon!");
-    }
-
-    //Saves user switch selection
-    public void savePreferences() {
-        if (getActivity() != null) {
-            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-
-            editor.putBoolean(NOTIFY_START_DATE, switchStartDate.isChecked());
-            editor.putBoolean(NOTIFY_END_DATE, switchEndDate.isChecked());
-
-            editor.apply();
-            Toast.makeText(getContext(), "Preferences saved successfully.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    //Assigns user switch selection to local booleans
-    public void loadPreferences() {
-        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-        notifyOnStartDate = preferences.getBoolean(NOTIFY_START_DATE, false);
-        notifyOnEndDate = preferences.getBoolean(NOTIFY_END_DATE, false);
-    }
-
-    //Changes switch views to previously user-selected value
-    public void updateViewsFromPreferences() {
-        switchStartDate.setChecked(notifyOnStartDate);
-        switchEndDate.setChecked(notifyOnEndDate);
     }
 
     @Override

@@ -43,7 +43,6 @@ public class NewCourse extends Fragment {
         // Required empty public constructor
     }
 
-
     public static NewCourse newInstance() {
         return new NewCourse();
     }
@@ -66,7 +65,7 @@ public class NewCourse extends Fragment {
 
         Bundle selectedTermBundle = this.getArguments();
         if (selectedTermBundle != null) {
-            this.selectedTerm = (Term)selectedTermBundle.getSerializable("selectedTerm");
+            this.selectedTerm = (Term) selectedTermBundle.getSerializable("selectedTerm");
         }
 
         databaseHelper = new DatabaseHelper(getActivity());

@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class CourseList extends Fragment {
@@ -60,7 +59,7 @@ public class CourseList extends Fragment {
         databaseHelper = new DatabaseHelper(getActivity());
         Bundle selectedTermBundle = this.getArguments();
         if (selectedTermBundle != null) {
-            this.selectedTerm = (Term)selectedTermBundle.getSerializable("selectedTerm");
+            this.selectedTerm = (Term) selectedTermBundle.getSerializable("selectedTerm");
             showAllCourses = false;
         } else {
             showAllCourses = true;

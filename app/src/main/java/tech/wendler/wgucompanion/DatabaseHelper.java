@@ -213,7 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        try (Cursor cursor = db .rawQuery(queryString, null)) {
+        try (Cursor cursor = db.rawQuery(queryString, null)) {
             while (cursor.moveToNext()) {
                 mentorId = cursor.getInt(cursor.getColumnIndex(MENTOR_COL0));
                 name = cursor.getString(cursor.getColumnIndex(MENTOR_COL1));
@@ -262,10 +262,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String queryString = "UPDATE " + COURSE_TABLE_NAME +
                 " SET " + COURSE_COL1 + " = " + mentorID + ", " +
                 COURSE_COL2 + " = " + termID + ", " +
-                COURSE_COL3 + " = '" + status + "', "+
-                COURSE_COL4 + " = '" + title + "', "+
-                COURSE_COL5 + " = '" + info + "', "+
-                COURSE_COL6 + " = '" + startDate + "', "+
+                COURSE_COL3 + " = '" + status + "', " +
+                COURSE_COL4 + " = '" + title + "', " +
+                COURSE_COL5 + " = '" + info + "', " +
+                COURSE_COL6 + " = '" + startDate + "', " +
                 COURSE_COL7 + " = '" + endDate + "' WHERE " +
                 COURSE_COL0 + " = " + courseID + ";";
 

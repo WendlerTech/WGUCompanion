@@ -79,7 +79,7 @@ public class NoteDetails extends Fragment {
             @Override
             public void onClick(View view) {
                 if (txtViewNoteTitle.getText().toString().length() > 0 &&
-                txtViewNoteContent.getText().toString().length() > 0) {
+                        txtViewNoteContent.getText().toString().length() > 0) {
                     Note updatedNote = new Note();
                     updatedNote.setNoteID(currentNote.getNoteID());
                     updatedNote.setCourseID(selectedCourse.getCourseID());
@@ -114,7 +114,7 @@ public class NoteDetails extends Fragment {
     public void onResume() {
         super.onResume();
         if (getActivity() != null) {
-            ((ViewNotes)getActivity()).setActionBarTitle("View Note");
+            ((ViewNotes) getActivity()).setActionBarTitle("View Note");
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }

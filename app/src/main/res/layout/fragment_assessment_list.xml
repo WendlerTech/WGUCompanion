@@ -7,7 +7,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/assessmentRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:padding="6dp"
+        android:scrollbars="vertical"
+        android:background="@color/darkerWhite"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/assessmentFloatingBtn"

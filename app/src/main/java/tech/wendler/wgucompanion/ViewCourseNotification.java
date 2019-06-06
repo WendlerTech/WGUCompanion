@@ -29,7 +29,6 @@ public class ViewCourseNotification extends AppCompatActivity {
         }
     }
 
-
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }

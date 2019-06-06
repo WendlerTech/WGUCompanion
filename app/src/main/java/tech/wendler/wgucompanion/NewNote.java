@@ -37,7 +37,7 @@ public class NewNote extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_new_note, container, false);
     }
@@ -83,7 +83,7 @@ public class NewNote extends Fragment {
             @Override
             public void onClick(View view) {
                 if (txtNewNoteTitle.getText().toString().length() > 0 &&
-                txtNewNoteContent.getText().toString().length() > 0) {
+                        txtNewNoteContent.getText().toString().length() > 0) {
                     newNote = new Note();
                     newNote.setNoteTitle(txtNewNoteTitle.getText().toString());
                     newNote.setNote(txtNewNoteContent.getText().toString());
@@ -125,7 +125,7 @@ public class NewNote extends Fragment {
     public void onResume() {
         super.onResume();
         if (getActivity() != null) {
-            ((ViewNotes)getActivity()).setActionBarTitle("New Note");
+            ((ViewNotes) getActivity()).setActionBarTitle("New Note");
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }

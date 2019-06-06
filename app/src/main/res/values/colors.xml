@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="darkerWhite">#E7E7E7</color>
     <color name="offWhite">#F3F3F3</color>
+    <color name="greenBtn">#3FD565</color>
+    <color name="defaultBtnBg">#D6D6D6</color>
+    <color name="defaultBtnText">#636363</color>
 </resources>
