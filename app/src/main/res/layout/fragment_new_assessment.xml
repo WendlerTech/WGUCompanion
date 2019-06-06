@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,54 +9,6 @@
         android:id="@+id/newAssessmentParentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/txtNewAssessmentDueYear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:ems="10"
-            android:inputType="numberSigned"
-            android:nextFocusDown="@id/txtNewAssessmentInformation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/lblAssessAlignment"
-            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentGoalYear" />
-
-        <TextView
-            android:id="@+id/lblNewAssessmentDueMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Due Month"
-            app:layout_constraintStart_toStartOf="@+id/txtNewAssessmentDueMonth"
-            app:layout_constraintTop_toBottomOf="@+id/txtNewAssessmentDueMonth" />
-
-        <EditText
-            android:id="@+id/txtNewAssessmentDueMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:inputType="numberSigned"
-            android:nextFocusDown="@id/txtNewAssessmentDueYear"
-            app:layout_constraintEnd_toStartOf="@+id/lblAssessAlignment"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentGoalMonth" />
-
-        <TextView
-            android:id="@+id/lblNewAssessmentDueYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Due Year"
-            app:layout_constraintStart_toStartOf="@+id/txtNewAssessmentDueYear"
-            app:layout_constraintTop_toBottomOf="@+id/txtNewAssessmentDueYear" />
 
         <TextView
             android:id="@+id/lblAssessAlignment"
@@ -95,7 +48,7 @@
             android:layout_marginEnd="8dp"
             android:text="Course Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentHeader" />
@@ -118,7 +71,7 @@
             android:layout_marginEnd="32dp"
             android:ems="10"
             android:inputType="textCapWords"
-            android:nextFocusDown="@id/txtNewAssessmentGoalMonth"
+            android:nextFocusDown="@id/txtNewAssessmentInformation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentCourseTitle" />
@@ -150,64 +103,18 @@
         </RadioGroup>
 
         <EditText
-            android:id="@+id/txtNewAssessmentGoalMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:inputType="numberSigned"
-            android:nextFocusDown="@id/txtNewAssessmentGoalYear"
-            app:layout_constraintEnd_toStartOf="@+id/lblAssessAlignment"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radGrpNewAssessment" />
-
-        <EditText
-            android:id="@+id/txtNewAssessmentGoalYear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:ems="10"
-            android:inputType="numberSigned"
-            android:nextFocusDown="@id/txtNewAssessmentDueMonth"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/lblAssessAlignment"
-            app:layout_constraintTop_toBottomOf="@+id/radGrpNewAssessment" />
-
-        <TextView
-            android:id="@+id/lblNewAssessmentGoalMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Goal Month"
-            app:layout_constraintStart_toStartOf="@+id/txtNewAssessmentGoalMonth"
-            app:layout_constraintTop_toBottomOf="@+id/txtNewAssessmentGoalMonth" />
-
-        <TextView
-            android:id="@+id/lblNewAssessmentGoalYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Goal Year"
-            app:layout_constraintStart_toStartOf="@+id/txtNewAssessmentGoalYear"
-            app:layout_constraintTop_toBottomOf="@+id/txtNewAssessmentGoalYear" />
-
-        <EditText
             android:id="@+id/txtNewAssessmentInformation"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine|textCapSentences"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentDueMonth" />
+            app:layout_constraintTop_toBottomOf="@+id/radGrpNewAssessment" />
 
         <TextView
             android:id="@+id/lblNewAssessmentInformation"
@@ -224,17 +131,17 @@
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
             android:text="Create Alert"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentInformation" />
+            app:layout_constraintStart_toEndOf="@+id/lblAssessAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentGoalDate" />
 
         <Button
             android:id="@+id/btnNewAssessmentCancel"
-            android:layout_width="125dp"
+            android:layout_width="150dp"
             android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="Cancel"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -244,14 +151,69 @@
 
         <Button
             android:id="@+id/btnNewAssessmentSubmit"
-            android:layout_width="125dp"
+            android:layout_width="150dp"
             android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="Submit"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lblAssessAlignment"
             app:layout_constraintTop_toBottomOf="@+id/btnNewAssessmentAlerts" />
+
+        <Button
+            android:id="@+id/btnNewAssessmentGoalDate"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Set Goal Date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toStartOf="@+id/lblAssessAlignment"
+            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentGoalDate" />
+
+        <TextView
+            android:id="@+id/lblNewAssessmentGoalDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Goal Date: 12-31-2019"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentInformation"
+            tools:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/lblNewAssessmentDueDateHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="40dp"
+            android:text="Due Date:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/radGrpNewAssessment" />
+
+        <TextView
+            android:id="@+id/lblNewAssessmentDueDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="6-2019"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/lblNewAssessmentDueDateHeader"
+            app:layout_constraintStart_toStartOf="@+id/lblNewAssessmentDueDateHeader"
+            app:layout_constraintTop_toBottomOf="@+id/lblNewAssessmentDueDateHeader" />
 
     </android.support.constraint.ConstraintLayout>
 

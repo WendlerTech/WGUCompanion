@@ -73,7 +73,13 @@ public class AssessmentRecyclerViewAdapter extends RecyclerView.Adapter<Assessme
                     Assessment selectedAssessment = assessmentList.get(position);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("selectedAssessment", selectedAssessment);
-                    bundle.putSerializable("selectedCourse", selectedCourse);
+                    if (selectedCourse.getCourseID() != 0) {
+                        bundle.putSerializable("selectedCourse", selectedCourse);
+                    } else {
+                        selectedCourse.setCourseID(assessmentList.get(position).getCourseID());
+                        selectedCourse.setEndDate(assessmentList.get(position).getDueDate());
+                        bundle.putSerializable("selectedCourse", selectedCourse);
+                    }
                     Fragment assessmentDetailsFragment = AssessmentDetails.newInstance();
                     assessmentDetailsFragment.setArguments(bundle);
                     fragmentTransaction.replace(R.id.assessmentsFrameLayout, assessmentDetailsFragment);

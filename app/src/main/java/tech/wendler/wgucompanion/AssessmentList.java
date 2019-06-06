@@ -61,6 +61,7 @@ public class AssessmentList extends Fragment {
             showAllAssessments = false;
         } else {
             showAllAssessments = true;
+            selectedCourse = new Course();
             assessmentFloatingBtn.hide();
         }
 
@@ -140,7 +141,7 @@ public class AssessmentList extends Fragment {
                             "\nor long press to delete the assessment.", Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(getContext(), "These are all of the assessments you've added.\n" +
+                Toast.makeText(getContext(), "These are all of the assessments from all your courses.\n" +
                         "Return & select a course to add more.", Toast.LENGTH_LONG).show();
             }
         }
