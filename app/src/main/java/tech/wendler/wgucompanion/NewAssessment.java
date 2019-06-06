@@ -138,7 +138,8 @@ public class NewAssessment extends Fragment {
                 endCal.set(Calendar.MONTH, calEndMonth - 1);
                 endCal.set(Calendar.DAY_OF_MONTH, endCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-                DatePickerDialog dialog = new DatePickerDialog(getActivity());
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(),
+                        R.style.CalendarDialogTheme);
                 dialog.setOnDateSetListener(dateSetListener);
                 dialog.getDatePicker().setMinDate(startCal.getTimeInMillis());
                 dialog.getDatePicker().setMaxDate(endCal.getTimeInMillis());

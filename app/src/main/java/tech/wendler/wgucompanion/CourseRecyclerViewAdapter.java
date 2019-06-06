@@ -21,12 +21,14 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
     private Context mContext;
     private FragmentTransaction fragmentTransaction;
     private DatabaseHelper databaseHelper;
+    private Term selectedTerm;
 
     CourseRecyclerViewAdapter(Context mContext, ArrayList<Course> courseList,
-                              FragmentTransaction fragmentTransaction) {
+                              FragmentTransaction fragmentTransaction, Term selectedTerm) {
         this.mContext = mContext;
         this.courseList = courseList;
         this.fragmentTransaction = fragmentTransaction;
+        this.selectedTerm = selectedTerm;
     }
 
     @NonNull

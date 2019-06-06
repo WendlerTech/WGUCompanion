@@ -123,7 +123,7 @@ public class CourseList extends Fragment {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         RecyclerView recyclerView = getView().findViewById(R.id.courseRecyclerView);
         CourseRecyclerViewAdapter adapter = new CourseRecyclerViewAdapter(getContext(),
-                courseArrayList, fragmentTransaction);
+                courseArrayList, fragmentTransaction, selectedTerm);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

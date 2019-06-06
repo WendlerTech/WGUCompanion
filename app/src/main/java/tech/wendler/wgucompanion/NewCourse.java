@@ -1,6 +1,7 @@
 package tech.wendler.wgucompanion;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -24,18 +26,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.InputMismatchException;
+import java.util.Locale;
 
 public class NewCourse extends Fragment {
 
-    private EditText txtCourseTitle, txtStartMonth, txtStartYear, txtEndMonth, txtEndYear, txtCourseInfo;
+    private EditText txtCourseTitle, txtCourseInfo;
+    private TextView lblStartDate, lblEndDate;
     private Spinner existingMentorSpinner, courseStatusSpinner;
     private DatabaseHelper databaseHelper;
-    private boolean mentorDataEntered = false;
-    private int enteredMentorId;
+    private boolean mentorDataEntered = false, startDateSelected = false, endDateSelected = false;
+    private int enteredMentorId, termStartMonth, termStartYear, termEndMonth, termEndYear;
+    private Button btnStartDate, btnEndDate;
     private Term selectedTerm;
     private Course newCourse;
     private ConstraintLayout newCourseLayout;
+    private DatePickerDialog.OnDateSetListener startDateSetListener, endDateSetListener;
+    private Calendar selectedStartCal, selectedEndCal;
 
     private ArrayAdapter<Mentor> mentorListAdapter;
 
@@ -73,14 +83,17 @@ public class NewCourse extends Fragment {
         existingMentorSpinner = getView().findViewById(R.id.addCourseMentorSpinner);
         courseStatusSpinner = getView().findViewById(R.id.addCourseStatusSpinner);
         txtCourseTitle = getView().findViewById(R.id.txtNewCourseTitle);
-        txtStartMonth = getView().findViewById(R.id.txtNewCourseStartMonth);
-        txtStartYear = getView().findViewById(R.id.txtNewCourseStartYear);
-        txtEndMonth = getView().findViewById(R.id.txtNewCourseEndMonth);
-        txtEndYear = getView().findViewById(R.id.txtNewCourseEndYear);
         txtCourseInfo = getView().findViewById(R.id.txtNewCourseInfo);
+        lblStartDate = getView().findViewById(R.id.lblNewCourseStartDate);
+        lblEndDate = getView().findViewById(R.id.lblNewCourseEndDate);
         btnAddMentor = getView().findViewById(R.id.btnAddNewMentorInfo);
         btnCancel = getView().findViewById(R.id.btnCancelNewCourse);
         btnSubmit = getView().findViewById(R.id.btnSubmitNewCourse);
+        btnStartDate = getView().findViewById(R.id.btnNewCourseStartDate);
+        btnEndDate = getView().findViewById(R.id.btnNewCourseEndDate);
+
+        lblStartDate.setVisibility(View.INVISIBLE);
+        lblEndDate.setVisibility(View.INVISIBLE);
 
         //Populates course status spinner
         ArrayAdapter<CharSequence> courseStatusAdapter = ArrayAdapter.createFromResource
@@ -112,15 +125,102 @@ public class NewCourse extends Fragment {
             }
         });
 
+        btnStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar startCal = Calendar.getInstance();
+                Calendar endCal = Calendar.getInstance();
+
+                startCal.set(Calendar.YEAR, termStartYear);
+                startCal.set(Calendar.MONTH, termStartMonth - 1);
+                startCal.set(Calendar.DAY_OF_MONTH, 1);
+                endCal.set(Calendar.YEAR, termEndYear);
+                endCal.set(Calendar.MONTH, termEndMonth - 1);
+                endCal.set(Calendar.DAY_OF_MONTH, endCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(),
+                        R.style.CalendarDialogTheme);
+                dialog.setOnDateSetListener(startDateSetListener);
+                dialog.getDatePicker().setMinDate(startCal.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(endCal.getTimeInMillis());
+
+                dialog.show();
+            }
+        });
+
+        startDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                selectedStartCal = calendar;
+                startDateSelected = true;
+                lblStartDate.setText(formatDate(calendar));
+                lblStartDate.setVisibility(View.VISIBLE);
+
+                if (selectedEndCal != null) {
+                    if (selectedEndCal.getTimeInMillis() < calendar.getTimeInMillis()) {
+                        Toast.makeText(getContext(), "Start date can't be before end date.",
+                                Toast.LENGTH_SHORT).show();
+                        selectedStartCal = null;
+                        startDateSelected = false;
+                        lblStartDate.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        };
+
+        btnEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar startCal = Calendar.getInstance();
+                Calendar endCal = Calendar.getInstance();
+
+                startCal.set(Calendar.YEAR, termStartYear);
+                startCal.set(Calendar.MONTH, termStartMonth - 1);
+                startCal.set(Calendar.DAY_OF_MONTH, 1);
+                endCal.set(Calendar.YEAR, termEndYear);
+                endCal.set(Calendar.MONTH, termEndMonth - 1);
+                endCal.set(Calendar.DAY_OF_MONTH, endCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(),
+                        R.style.CalendarDialogTheme);
+                dialog.setOnDateSetListener(endDateSetListener);
+                dialog.getDatePicker().setMinDate(startCal.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(endCal.getTimeInMillis());
+
+                dialog.show();
+            }
+        });
+
+        endDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                selectedEndCal = calendar;
+                endDateSelected = true;
+                lblEndDate.setText(formatDate(calendar));
+                lblEndDate.setVisibility(View.VISIBLE);
+
+                if (selectedStartCal != null) {
+                    if (selectedStartCal.getTimeInMillis() > calendar.getTimeInMillis()) {
+                        Toast.makeText(getContext(), "End date can't be after start date.",
+                                Toast.LENGTH_SHORT).show();
+                        selectedEndCal = null;
+                        endDateSelected = false;
+                        lblEndDate.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        };
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Mentor selectedMentor = (Mentor) existingMentorSpinner.getSelectedItem();
                 if (txtCourseTitle.getText().toString().length() > 0 &&
-                        txtStartMonth.getText().toString().length() > 0 &&
-                        txtStartYear.getText().toString().length() > 0 &&
-                        txtEndMonth.getText().toString().length() > 0 &&
-                        txtEndYear.getText().toString().length() > 0 &&
+                        startDateSelected && endDateSelected &&
                         txtCourseInfo.getText().toString().length() > 0 &&
                         courseStatusSpinner.getSelectedItem() != null &&
                         selectedMentor != null) {
@@ -130,10 +230,8 @@ public class NewCourse extends Fragment {
                     newCourse.setCourseStatus(courseStatusSpinner.getSelectedItem().toString());
                     newCourse.setCourseTitle(txtCourseTitle.getText().toString());
                     newCourse.setCourseInfo(txtCourseInfo.getText().toString());
-                    newCourse.setStartDate(txtStartMonth.getText().toString() +
-                            "-" + txtStartYear.getText().toString());
-                    newCourse.setEndDate(txtEndMonth.getText().toString() +
-                            "-" + txtEndYear.getText().toString());
+                    newCourse.setStartDate(formatDate(selectedStartCal));
+                    newCourse.setEndDate(formatDate(selectedEndCal));
 
                     long newlyAddedCourseID = databaseHelper.addNewCourse(newCourse);
                     int courseID = Math.toIntExact(newlyAddedCourseID);
@@ -150,24 +248,21 @@ public class NewCourse extends Fragment {
                     if (txtCourseTitle.getText().toString().length() == 0) {
                         txtCourseTitle.setError("Can't be blank.");
                     }
-                    if (txtStartMonth.getText().toString().length() == 0) {
-                        txtStartMonth.setError("Can't be blank.");
-                    }
-                    if (txtStartYear.getText().toString().length() == 0) {
-                        txtStartYear.setError("Can't be blank.");
-                    } else if (txtStartYear.getText().toString().length() < 4) {
-                        txtStartYear.setError("Please enter a 4 digit year.");
-                    }
-                    if (txtEndMonth.getText().toString().length() == 0) {
-                        txtEndMonth.setError("Can't be blank.");
-                    }
-                    if (txtEndYear.getText().toString().length() == 0) {
-                        txtEndYear.setError("Can't be blank.");
-                    } else if (txtEndYear.getText().toString().length() < 4) {
-                        txtEndYear.setError("Please enter a 4 digit year.");
-                    }
                     if (txtCourseInfo.getText().toString().length() == 0) {
                         txtCourseInfo.setError("Can't be blank.");
+                    }
+                    if (!startDateSelected && !endDateSelected) {
+                        Toast.makeText(getContext(), "Please select start & end dates.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (!startDateSelected) {
+                            Toast.makeText(getContext(), "Please select a start date.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        if (!endDateSelected) {
+                            Toast.makeText(getContext(), "Please select an end date.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                     if (selectedMentor == null) {
                         Toast.makeText(getContext(), "Please add a course mentor.",
@@ -177,11 +272,10 @@ public class NewCourse extends Fragment {
             }
         });
 
-        populateDates();
-        handleDateTextWatchers();
+        populateTermDates();
     }
 
-    private void populateDates() {
+    private void populateTermDates() {
         String startDate = selectedTerm.getStartDate();
         String endDate = selectedTerm.getEndDate();
         String startMonth, startYear, endMonth, endYear;
@@ -203,115 +297,15 @@ public class NewCourse extends Fragment {
             endYear = endDate.substring(3);
         }
 
-        txtStartMonth.setText(startMonth);
-        txtStartYear.setText(startYear);
-        txtEndMonth.setText(endMonth);
-        txtEndYear.setText(endYear);
-    }
+        try {
+            this.termStartMonth = Integer.parseInt(startMonth);
+            this.termStartYear = Integer.parseInt(startYear);
+            this.termEndMonth = Integer.parseInt(endMonth);
+            this.termEndYear = Integer.parseInt(endYear);
 
-    private void handleDateTextWatchers() {
-        txtStartMonth.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        } catch (InputMismatchException ignored) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (txtStartMonth.getText().toString().length() > 2) {
-                    txtStartMonth.setText("");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (txtStartMonth.getText().toString().length() > 0) {
-                    //Disallows numbers outside of 1-12
-                    if (Integer.parseInt(txtStartMonth.getText().toString()) > 12) {
-                        txtStartMonth.setText("");
-                    } else if (Integer.parseInt(txtStartMonth.getText().toString()) == 0) {
-                        txtStartMonth.setText("");
-                    }
-
-                }
-            }
-        });
-
-        txtStartYear.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (txtStartYear.getText().toString().length() > 4) {
-                    txtStartYear.setText("");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (txtStartYear.getText().toString().length() > 0) {
-                    //Disallows high, unrealistic years
-                    if (Integer.parseInt(txtStartYear.getText().toString()) > 2050) {
-                        txtStartYear.setText("");
-                    }
-                }
-            }
-        });
-
-        txtEndMonth.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (txtEndMonth.getText().toString().length() > 2) {
-                    txtEndMonth.setText("");
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (txtEndMonth.getText().toString().length() > 0) {
-                    //Disallows numbers outside of 1-12
-                    if (Integer.parseInt(txtEndMonth.getText().toString()) > 12) {
-                        txtEndMonth.setText("");
-                    } else if (Integer.parseInt(txtEndMonth.getText().toString()) == 0) {
-                        txtEndMonth.setText("");
-                    }
-
-                }
-            }
-        });
-
-        txtEndYear.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (txtEndYear.getText().toString().length() > 4) {
-                    txtEndYear.setText("");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (txtEndYear.getText().toString().length() > 0) {
-                    //Disallows high, unrealistic years
-                    if (Integer.parseInt(txtEndYear.getText().toString()) > 2050) {
-                        txtEndYear.setText("");
-                    }
-                }
-            }
-        });
+        }
     }
 
     private void showNewMentorDialog() {
@@ -503,5 +497,11 @@ public class NewCourse extends Fragment {
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
+    }
+
+    //Takes in calendar instance & returns a string formatted as such: 11-2015
+    private String formatDate(Calendar date) {
+        SimpleDateFormat format = new SimpleDateFormat("M-yyyy", Locale.US);
+        return format.format(date.getTime());
     }
 }
