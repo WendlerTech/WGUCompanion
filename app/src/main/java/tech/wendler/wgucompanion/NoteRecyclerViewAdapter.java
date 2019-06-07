@@ -44,11 +44,10 @@ public class NoteRecyclerViewAdapter extends RecyclerView.Adapter<NoteRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        int noteID, courseID;
+        int noteID;
         String noteContent, noteTitle;
 
         noteID = noteList.get(position).getNoteID();
-        courseID = noteList.get(position).getCourseID();
         noteContent = noteList.get(position).getNote();
         noteTitle = noteList.get(position).getNoteTitle();
 

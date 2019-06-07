@@ -44,7 +44,7 @@
             android:layout_marginEnd="32dp"
             android:capitalize="sentences"
             android:ems="10"
-            android:inputType="textCapSentences"
+            android:inputType="textCapWords"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblNewNoteHeader" />

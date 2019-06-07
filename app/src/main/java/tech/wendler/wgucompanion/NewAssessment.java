@@ -36,7 +36,7 @@ public class NewAssessment extends Fragment {
 
     private TextView lblCourseTitle, lblSelectedGoalDate, lblDueDate;
     private EditText txtTitle, txtInformation;
-    private RadioButton radBtnObjective, radBtnPerformance;
+    private RadioButton radBtnObjective;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private Calendar selectedGoalDateCalendar;
     private Button btnCreateAlert;
@@ -83,7 +83,6 @@ public class NewAssessment extends Fragment {
         txtTitle = getView().findViewById(R.id.txtNewAssessmentTitle);
         txtInformation = getView().findViewById(R.id.txtNewAssessmentInformation);
         radBtnObjective = getView().findViewById(R.id.radBtnNewAssessmentObjective);
-        radBtnPerformance = getView().findViewById(R.id.radBtnNewAssessmentPerformance);
 
         lblCourseTitle.setText(selectedCourse.getCourseTitle());
         lblDueDate.setText(selectedCourse.getEndDate());

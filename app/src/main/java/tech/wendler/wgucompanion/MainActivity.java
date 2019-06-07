@@ -1,4 +1,11 @@
 package tech.wendler.wgucompanion;
+/*
+
+    Student scheduler app, made by Nick Wendler (Marcos Nicolas Wendler) from 5/16/2019-6/6/2019.
+    App created as a school project while attending WGU; Mobile App Development - C196
+    Website: https://wendler.tech/
+
+ */
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -20,23 +27,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.InputMismatchException;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean nameEntered = false;
     private boolean degreeEntered = false;
     private boolean endDateAfterStart = false;
-    private Button btnNewTerm;
     private TextView lblWelcomeName, lblWelcomeDegree;
     private DatabaseHelper databaseHelper;
     SharedPreferences sp;
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         databaseHelper = new DatabaseHelper(this);
         lblWelcomeName = findViewById(R.id.lblWelcomeName);
         lblWelcomeDegree = findViewById(R.id.lblUserDegree);
-        btnNewTerm = findViewById(R.id.btnNewTerm);
+        Button btnNewTerm = findViewById(R.id.btnNewTerm);
 
         btnNewTerm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +136,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    /*
+    This 350+ line monster is here for the sake of course requirements wanting
+    both declarative & programmatic methods to create the user interface.
+     */
     private void showNewTermDialog() {
         final AlertDialog.Builder newTermDialog = new AlertDialog.Builder(this);
         TextView lblTermTitle = new TextView(this);
@@ -209,29 +211,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(DialogInterface dialogInterface, int i) {
                 String termTitle, termStartDate, termEndDate;
 
-                if (Integer.parseInt(txtYearStart.getText().toString()) <= 50) {
-                    termStartDate = txtMonthStart.getText().toString() + "-20"
-                            + txtYearStart.getText().toString();
+                if (Integer.parseInt(txtYearStart.getText().toString()) < 1000 ||
+                        Integer.parseInt(txtYearEnd.getText().toString()) < 1000) {
+                    Toast.makeText(getApplicationContext(), "Please enter a 4 digit year.", Toast.LENGTH_SHORT).show();
                 } else {
                     termStartDate = txtMonthStart.getText().toString() + "-"
                             + txtYearStart.getText().toString();
-                }
-                if (Integer.parseInt(txtYearEnd.getText().toString()) <= 50) {
-                    termEndDate = txtMonthEnd.getText().toString() + "-20"
-                            + txtYearEnd.getText().toString();
-                } else {
                     termEndDate = txtMonthEnd.getText().toString() + "-"
                             + txtYearEnd.getText().toString();
-                }
 
-                termTitle = txtTermTitle.getText().toString();
+                    termTitle = txtTermTitle.getText().toString();
 
-                if (databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate) != -1) {
-                    Toast.makeText(getApplicationContext(), "Term added successfully.", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), ViewTerms.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error saving term data.", Toast.LENGTH_SHORT).show();
+                    if (databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate) != -1) {
+                        Toast.makeText(getApplicationContext(), "Term added successfully.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), ViewTerms.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error saving term data.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -659,10 +656,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_assessments:
                 intent = new Intent(this, ViewAssessments.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_progress:
-                intent = new Intent(this, ViewProgress.class);
                 startActivity(intent);
                 break;
             case R.id.nav_mentor:

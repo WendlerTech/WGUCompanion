@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class AssessmentRecyclerViewAdapter extends RecyclerView.Adapter<AssessmentRecyclerViewAdapter.ViewHolder> {
@@ -43,18 +44,15 @@ public class AssessmentRecyclerViewAdapter extends RecyclerView.Adapter<Assessme
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        int assessmentID, courseID;
-        String title, info, goalDate, dueDate;
+        int assessmentID;
+        String title, goalDate;
         boolean isObjective;
 
         databaseHelper = new DatabaseHelper(mContext);
 
         assessmentID = assessmentList.get(position).getAssessmentID();
-        courseID = assessmentList.get(position).getCourseID();
         title = assessmentList.get(position).getAssessmentTitle();
-        info = assessmentList.get(position).getAssessmentInfo();
         goalDate = "Goal date: " + assessmentList.get(position).getGoalDate();
-        dueDate = assessmentList.get(position).getDueDate();
         isObjective = assessmentList.get(position).isObjective();
 
         viewHolder.lblAssessmentTitle.setText(title);

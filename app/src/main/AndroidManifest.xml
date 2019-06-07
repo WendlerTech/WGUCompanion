@@ -39,12 +39,6 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <activity android:name=".ViewProgress">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-
         <activity android:name=".ViewMentor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

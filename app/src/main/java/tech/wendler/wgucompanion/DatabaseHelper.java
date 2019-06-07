@@ -163,6 +163,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TERM_TABLE_NAME, null, contentValues);
     }
 
+    void updateTerm(Term termToUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String title, start, end;
+        int termID;
+
+        title = termToUpdate.getTermTitle();
+        start = termToUpdate.getStartDate();
+        end = termToUpdate.getEndDate();
+        termID = termToUpdate.getTermID();
+
+        String queryString = "UPDATE " + TERM_TABLE_NAME + " SET " +
+                TERM_COL1 + " = '" + title + "', " +
+                TERM_COL2 + " = '" + start + "', " +
+                TERM_COL3 + " = '" + end + "' WHERE " +
+                TERM_COL0 + " = " + termID + ";";
+
+        db.execSQL(queryString);
+        db.close();
+    }
+
     void deleteTerm(int termIdToDelete) {
         SQLiteDatabase db = this.getWritableDatabase();
 

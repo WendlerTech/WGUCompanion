@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -42,7 +43,7 @@
             android:layout_marginEnd="32dp"
             android:capitalize="sentences"
             android:ems="10"
-            android:inputType="textCapSentences"
+            android:inputType="textCapWords"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblViewNoteHeader" />
@@ -77,22 +78,22 @@
             android:layout_width="100dp"
             android:layout_height="45dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="4dp"
             android:text="Submit"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintStart_toEndOf="@+id/lblViewNoteAlignment"
-            app:layout_constraintTop_toBottomOf="@+id/btnViewNoteClear" />
+            app:layout_constraintTop_toBottomOf="@+id/btnViewNoteShare" />
 
         <Button
             android:id="@+id/btnViewNoteCancel"
             android:layout_width="100dp"
             android:layout_height="45dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:text="Cancel"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/lblViewNoteAlignment"
-            app:layout_constraintTop_toBottomOf="@+id/btnViewNoteClear" />
+            app:layout_constraintTop_toBottomOf="@+id/btnViewNoteShare" />
 
         <Button
             android:id="@+id/btnViewNoteClear"
@@ -117,6 +118,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnViewNoteShare"
+            android:layout_width="125dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Share Note"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnViewNoteClear" />
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

@@ -50,10 +50,11 @@ public class NoteDetails extends Fragment {
             lblViewNoteHeader.setText("View note from:\n" + selectedCourse.getCourseTitle());
         }
 
-        Button btnClear, btnCancel, btnSubmit;
+        Button btnClear, btnCancel, btnSubmit, btnShareNote;
         btnClear = getView().findViewById(R.id.btnViewNoteClear);
         btnCancel = getView().findViewById(R.id.btnViewNoteCancel);
         btnSubmit = getView().findViewById(R.id.btnViewNoteSubmit);
+        btnShareNote = getView().findViewById(R.id.btnViewNoteShare);
         txtViewNoteTitle = getView().findViewById(R.id.txtViewNoteTitle);
         txtViewNoteContent = getView().findViewById(R.id.txtViewNoteContent);
         parentLayout = getView().findViewById(R.id.viewNoteLayout);
@@ -101,6 +102,19 @@ public class NoteDetails extends Fragment {
                 }
             }
         });
+
+        btnShareNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, currentNote.getNoteTitle() +
+                        "\n" + currentNote.getNote());
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
         populateData();
         parentLayout.requestFocus();
     }

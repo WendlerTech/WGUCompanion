@@ -40,7 +40,6 @@ public class NewCourse extends Fragment {
     private DatabaseHelper databaseHelper;
     private boolean mentorDataEntered = false, startDateSelected = false, endDateSelected = false;
     private int enteredMentorId, termStartMonth, termStartYear, termEndMonth, termEndYear;
-    private Button btnStartDate, btnEndDate;
     private Term selectedTerm;
     private Course newCourse;
     private ConstraintLayout newCourseLayout;
@@ -71,7 +70,7 @@ public class NewCourse extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button btnAddMentor, btnCancel, btnSubmit;
+        Button btnAddMentor, btnCancel, btnSubmit, btnStartDate, btnEndDate;
 
         Bundle selectedTermBundle = this.getArguments();
         if (selectedTermBundle != null) {
@@ -155,7 +154,7 @@ public class NewCourse extends Fragment {
                 calendar.set(year, month, dayOfMonth);
                 selectedStartCal = calendar;
                 startDateSelected = true;
-                lblStartDate.setText(formatDate(calendar));
+                lblStartDate.setText("Start Date: " + formatDate(calendar));
                 lblStartDate.setVisibility(View.VISIBLE);
 
                 if (selectedEndCal != null) {
@@ -200,7 +199,7 @@ public class NewCourse extends Fragment {
                 calendar.set(year, month, dayOfMonth);
                 selectedEndCal = calendar;
                 endDateSelected = true;
-                lblEndDate.setText(formatDate(calendar));
+                lblEndDate.setText("End Date: " + formatDate(calendar));
                 lblEndDate.setVisibility(View.VISIBLE);
 
                 if (selectedStartCal != null) {

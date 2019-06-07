@@ -219,40 +219,35 @@ public class TermList extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String termTitle, termStartDate, termEndDate;
 
-                if (Integer.parseInt(txtYearStart.getText().toString()) <= 50) {
-                    termStartDate = txtMonthStart.getText().toString() + "-20"
-                            + txtYearStart.getText().toString();
+                if (Integer.parseInt(txtYearStart.getText().toString()) < 1000 ||
+                        Integer.parseInt(txtYearEnd.getText().toString()) < 1000) {
+                    Toast.makeText(getContext(), "Please enter a 4 digit year.", Toast.LENGTH_SHORT).show();
                 } else {
                     termStartDate = txtMonthStart.getText().toString() + "-"
                             + txtYearStart.getText().toString();
-                }
-                if (Integer.parseInt(txtYearEnd.getText().toString()) <= 50) {
-                    termEndDate = txtMonthEnd.getText().toString() + "-20"
-                            + txtYearEnd.getText().toString();
-                } else {
                     termEndDate = txtMonthEnd.getText().toString() + "-"
                             + txtYearEnd.getText().toString();
-                }
 
-                termTitle = txtTermTitle.getText().toString();
+                    termTitle = txtTermTitle.getText().toString();
 
-                long dbInsertResult = databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate);
-                int newlyAddedTermID = Math.toIntExact(dbInsertResult);
+                    long dbInsertResult = databaseHelper.addNewTerm(termTitle, termStartDate, termEndDate);
+                    int newlyAddedTermID = Math.toIntExact(dbInsertResult);
 
-                if (newlyAddedTermID != -1) {
-                    Toast.makeText(getContext(), "Term added successfully.", Toast.LENGTH_SHORT).show();
+                    if (newlyAddedTermID != -1) {
+                        Toast.makeText(getContext(), "Term added successfully.", Toast.LENGTH_SHORT).show();
 
-                    //Adds new term to list & tells the recycler view to refresh
-                    Term newlyAddedTerm = new Term(newlyAddedTermID, termTitle, termStartDate, termEndDate);
-                    termArrayList.add(newlyAddedTerm);
-                    if (termArrayList.contains(emptyTerm)) {
-                        adapter.notifyItemRemoved(termArrayList.indexOf(emptyTerm));
-                        termArrayList.remove(emptyTerm);
+                        //Adds new term to list & tells the recycler view to refresh
+                        Term newlyAddedTerm = new Term(newlyAddedTermID, termTitle, termStartDate, termEndDate);
+                        termArrayList.add(newlyAddedTerm);
+                        if (termArrayList.contains(emptyTerm)) {
+                            adapter.notifyItemRemoved(termArrayList.indexOf(emptyTerm));
+                            termArrayList.remove(emptyTerm);
+                        }
+                        adapter.notifyItemInserted(termArrayList.indexOf(newlyAddedTerm));
+
+                    } else {
+                        Toast.makeText(getContext(), "Error saving term data.", Toast.LENGTH_SHORT).show();
                     }
-                    adapter.notifyItemInserted(termArrayList.indexOf(newlyAddedTerm));
-
-                } else {
-                    Toast.makeText(getContext(), "Error saving term data.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecyclerViewAdapter.ViewHolder> {
@@ -41,15 +42,12 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        int courseID, mentorID, termID;
-        String status, title, info, startDate, endDate;
+        int termID;
+        String status, title, startDate, endDate;
 
-        courseID = courseList.get(position).getCourseID();
-        mentorID = courseList.get(position).getMentorID();
         termID = courseList.get(position).getTermID();
         status = courseList.get(position).getCourseStatus();
         title = courseList.get(position).getCourseTitle();
-        info = courseList.get(position).getCourseInfo();
         startDate = "Start: " + courseList.get(position).getStartDate();
         endDate = "Due by: " + courseList.get(position).getEndDate();
 
@@ -66,6 +64,7 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
                     Course selectedCourse = courseList.get(position);
                     Intent intent = new Intent(mContext, CourseDetails.class);
                     intent.putExtra("selectedCourse", selectedCourse);
+                    intent.putExtra("selectedTerm", selectedTerm);
                     mContext.startActivity(intent);
                 }
             });
