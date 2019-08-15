@@ -2,7 +2,7 @@
 
 This is an Android app used to track your degree progress while attending WGU.
 
-Features:
+## Features
 
 * Add terms & their dates
 * Populate terms with courses
@@ -15,3 +15,8 @@ Features:
     * Receive alerts prior to due dates
 * Save mentor data
   * Assign mentors for each course
+  
+  
+ ## Storyboard
+ 
+![WGU Companion Storyboard](https://github.com/WendlerTech/WGUCompanion/blob/master/C196%20StoryBoard.png)
